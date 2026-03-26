@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESG Calculator - ITB</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>ESG Savings Calculator</h1>
+        <p>Assessment and projection of consumption for the ITB center</p>
+    </header>
+
+    <main>
+        <section class="calculator-section">
+            <h2>1. Enter Base Monthly Data</h2>
+            <p>Enter the average consumption of a standard month to calculate projections.</p>
+            
+            <form id="calc-form">
+                <div class="input-group">
+                    <label for="elec-base">Base Electricity (kWh/month):</label>
+                    <input type="number" id="elec-base" required placeholder="Ex: 5000">
+                </div>
+                <div class="input-group">
+                    <label for="water-base">Base Water (Liters/month):</label>
+                    <input type="number" id="water-base" required placeholder="Ex: 15000">
+                </div>
+                <div class="input-group">
+                    <label for="supplies-base">Office Supplies (€/month):</label>
+                    <input type="number" id="supplies-base" required placeholder="Ex: 300">
+                </div>
+                <div class="input-group">
+                    <label for="cleaning-base">Cleaning Products (Liters/month):</label>
+                    <input type="number" id="cleaning-base" required placeholder="Ex: 50">
+                </div>
+                <button type="button" onclick="calculateConsumption()">Calculate Projections</button>
+            </form>
+        </section>
+
+        <section class="results-section" id="results" style="display:none;">
+            <h2>2. Projected Results (With Seasonality)</h2>
+            <div class="results-grid">
+                <div class="result-card">
+                    <h3>Electricity</h3>
+                    <p>Full next year: <span id="res-elec-year">0</span> kWh</p>
+                    <p>School period (Sept-June): <span id="res-elec-period">0</span> kWh</p>
+                </div>
+                <div class="result-card">
+                    <h3>Water</h3>
+                    <p>Full next year: <span id="res-water-year">0</span> L</p>
+                    <p>School period (Sept-June): <span id="res-water-period">0</span> L</p>
+                </div>
+                <div class="result-card">
+                    <h3>Office Supplies</h3>
+                    <p>Full next year: <span id="res-sup-year">0</span> €</p>
+                    <p>School period (Sept-June): <span id="res-sup-period">0</span> €</p>
+                </div>
+                <div class="result-card">
+                    <h3>Cleaning Products</h3>
+                    <p>Full next year: <span id="res-clean-year">0</span> L</p>
+                    <p>School period (Sept-June): <span id="res-clean-period">0</span> L</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="plan-section">
+            <h2>3. 30% Reduction Plan in 3 Years</h2>
+            <p>To comply with ESG objectives and the Circular Economy, we aim to reduce overall consumption by 30%. These are our target goals for Year 3:</p>
+            <ul id="reduction-goals">
+                <li>Annual electricity target: <span id="obj-elec">0</span> kWh (Action: Climate optimization and automatic server shutdown).</li>
+                <li>Annual water target: <span id="obj-water">0</span> L (Action: Repairing night leaks and tap aerators).</li>
+                <li>Annual office supplies target: <span id="obj-sup">0</span> € (Action: Zero paper digitization and marker refills).</li>
+                <li>Annual cleaning target: <span id="obj-clean">0</span> L (Action: Bulk purchasing and concentrated ecological products).</li>
+            </ul>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
