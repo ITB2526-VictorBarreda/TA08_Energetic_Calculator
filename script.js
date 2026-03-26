@@ -5,55 +5,77 @@ function calculateConsumption() {
     let supBase = parseFloat(document.getElementById('supplies-base').value) || 0;
     let cleanBase = parseFloat(document.getElementById('cleaning-base').value) || 0;
 
-    // 2. Seasonality Factors 
-    // Electricity: higher in winter/summer due to climate control (+15% annual extra). 
-    // The school period has less impact from August air conditioning.
-    const seasonalityElecYear = 1.15; 
-    const seasonalityElecPeriod = 1.05; 
+    // Variables to store accumulated totals
+    let elecYear = 0, elecPeriod = 0;
+    let waterYear = 0, waterPeriod = 0;
+    let supYear = 0, supPeriod = 0;
+    let cleanYear = 0, cleanPeriod = 0;
 
-    // Water: higher in summer (+10%).
-    const seasonalityWaterYear = 1.10;
-    
-    // Supplies and Cleaning: High consumption during school months, almost zero in August.
-    const activeSchoolMonths = 10; // September to June
+    // 2. Month-by-month seasonality algorithm
+    // 1 = Jan, 2 = Feb... 8 = Aug (Summer close), 9 = Sept (Start of year)
+    for (let month = 1; month <= 12; month++) {
+        let elecFactor = 1.0;
+        let waterFactor = 1.0;
+        let supFactor = 1.0;
+        let cleanFactor = 1.0;
 
-    // 3. Calculation of the 8 indicators
-    // ELECTRICITY
-    let resElecYear = elecBase * 12 * seasonalityElecYear;
-    let resElecPeriod = elecBase * activeSchoolMonths * seasonalityElecPeriod;
+        // Apply specific seasonal logic
+        if (month === 8) {
+            // AUGUST: Center is mostly closed
+            elecFactor = 0.15; // Only servers and fridges
+            waterFactor = 0.10; // Only base leaks
+            supFactor = 0.0;    // No classes
+            cleanFactor = 0.20; // Basic maintenance
+        } else if (month === 7) {
+            // JULY: Less activity, but intensive cleaning
+            elecFactor = 0.8;
+            waterFactor = 0.9;
+            supFactor = 0.2;
+            cleanFactor = 1.5; // Deep summer cleaning
+        } else if (month === 12 || month === 1 || month === 2) {
+            // WINTER: Heating and more artificial light
+            elecFactor = 1.3;
+        } else if (month === 9) {
+            // SEPTEMBER: Start of the school year
+            supFactor = 2.0; // Massive purchase of supplies
+            cleanFactor = 1.2;
+        }
 
-    // WATER
-    let resWaterYear = waterBase * 12 * seasonalityWaterYear;
-    let resWaterPeriod = waterBase * activeSchoolMonths; // No summer seasonality added
+        // Add to Annual Total
+        elecYear += elecBase * elecFactor;
+        waterYear += waterBase * waterFactor;
+        supYear += supBase * supFactor;
+        cleanYear += cleanBase * cleanFactor;
 
-    // OFFICE SUPPLIES
-    let resSupYear = (supBase * activeSchoolMonths) + (supBase * 2 * 0.1); // Summer is only 10%
-    let resSupPeriod = supBase * activeSchoolMonths;
+        // Add to School Period (Sept - June) -> Exclude July (7) and August (8)
+        if (month !== 7 && month !== 8) {
+            elecPeriod += elecBase * elecFactor;
+            waterPeriod += waterBase * waterFactor;
+            supPeriod += supBase * supFactor;
+            cleanPeriod += cleanBase * cleanFactor;
+        }
+    }
 
-    // CLEANING PRODUCTS
-    let resCleanYear = (cleanBase * activeSchoolMonths) + (cleanBase * 2 * 0.3); // Summer uses 30% for deep cleaning
-    let resCleanPeriod = cleanBase * activeSchoolMonths;
-
-    // 4. Display results on the web (rounded to 2 decimals)
+    // 3. Display Results on the UI (Rounded)
     document.getElementById('results').style.display = 'block';
-    
-    document.getElementById('res-elec-year').innerText = resElecYear.toFixed(2);
-    document.getElementById('res-elec-period').innerText = resElecPeriod.toFixed(2);
-    
-    document.getElementById('res-water-year').innerText = resWaterYear.toFixed(2);
-    document.getElementById('res-water-period').innerText = resWaterPeriod.toFixed(2);
-    
-    document.getElementById('res-sup-year').innerText = resSupYear.toFixed(2);
-    document.getElementById('res-sup-period').innerText = resSupPeriod.toFixed(2);
-    
-    document.getElementById('res-clean-year').innerText = resCleanYear.toFixed(2);
-    document.getElementById('res-clean-period').innerText = resCleanPeriod.toFixed(2);
 
-    // 5. Calculate the 30% Reduction Plan
-    const reductionFactor = 0.70; // Keeping 70% means a 30% reduction
-    
-    document.getElementById('obj-elec').innerText = (resElecYear * reductionFactor).toFixed(2);
-    document.getElementById('obj-water').innerText = (resWaterYear * reductionFactor).toFixed(2);
-    document.getElementById('obj-sup').innerText = (resSupYear * reductionFactor).toFixed(2);
-    document.getElementById('obj-clean').innerText = (resCleanYear * reductionFactor).toFixed(2);
+    document.getElementById('res-elec-year').innerText = Math.round(elecYear);
+    document.getElementById('res-elec-period').innerText = Math.round(elecPeriod);
+
+    document.getElementById('res-water-year').innerText = Math.round(waterYear);
+    document.getElementById('res-water-period').innerText = Math.round(waterPeriod);
+
+    document.getElementById('res-sup-year').innerText = Math.round(supYear);
+    document.getElementById('res-sup-period').innerText = Math.round(supPeriod);
+
+    document.getElementById('res-clean-year').innerText = Math.round(cleanYear);
+    document.getElementById('res-clean-period').innerText = Math.round(cleanPeriod);
+
+    // 4. Calculate the 30% Reduction Plan
+    const reductionFactor = 0.70; // -30%
+
+    document.getElementById('obj-elec').innerText = Math.round(elecYear * reductionFactor);
+    document.getElementById('obj-water').innerText = Math.round(waterYear * reductionFactor);
+    document.getElementById('obj-sup').innerText = Math.round(supYear * reductionFactor);
+    document.getElementById('obj-clean').innerText = Math.round(cleanYear * reductionFactor);
 }

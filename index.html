@@ -8,15 +8,15 @@
 </head>
 <body>
     <header>
-        <h1>ESG Savings Calculator</h1>
-        <p>Assessment and projection of consumption for the ITB center</p>
+        <h1>ESG Savings Calculator (ITB)</h1>
+        <p>Advanced assessment and projection of consumption with seasonality</p>
     </header>
 
     <main>
         <section class="calculator-section">
             <h2>1. Enter Base Monthly Data</h2>
-            <p>Enter the average consumption of a standard month to calculate projections.</p>
-            
+            <p>Enter the average consumption of a standard month. The algorithm will apply seasonal variations (summer closures, winter heating, etc.).</p>
+
             <form id="calc-form">
                 <div class="input-group">
                     <label for="elec-base">Base Electricity (kWh/month):</label>
@@ -39,39 +39,39 @@
         </section>
 
         <section class="results-section" id="results" style="display:none;">
-            <h2>2. Projected Results (With Seasonality)</h2>
+            <h2>2. Projected Results (With Advanced Seasonality)</h2>
             <div class="results-grid">
                 <div class="result-card">
                     <h3>Electricity</h3>
-                    <p>Full next year: <span id="res-elec-year">0</span> kWh</p>
-                    <p>School period (Sept-June): <span id="res-elec-period">0</span> kWh</p>
+                    <p>Full next year: <strong id="res-elec-year">0</strong> kWh</p>
+                    <p>School period (Sept-June): <strong id="res-elec-period">0</strong> kWh</p>
                 </div>
                 <div class="result-card">
                     <h3>Water</h3>
-                    <p>Full next year: <span id="res-water-year">0</span> L</p>
-                    <p>School period (Sept-June): <span id="res-water-period">0</span> L</p>
+                    <p>Full next year: <strong id="res-water-year">0</strong> L</p>
+                    <p>School period (Sept-June): <strong id="res-water-period">0</strong> L</p>
                 </div>
                 <div class="result-card">
                     <h3>Office Supplies</h3>
-                    <p>Full next year: <span id="res-sup-year">0</span> €</p>
-                    <p>School period (Sept-June): <span id="res-sup-period">0</span> €</p>
+                    <p>Full next year: <strong id="res-sup-year">0</strong> €</p>
+                    <p>School period (Sept-June): <strong id="res-sup-period">0</strong> €</p>
                 </div>
                 <div class="result-card">
                     <h3>Cleaning Products</h3>
-                    <p>Full next year: <span id="res-clean-year">0</span> L</p>
-                    <p>School period (Sept-June): <span id="res-clean-period">0</span> L</p>
+                    <p>Full next year: <strong id="res-clean-year">0</strong> L</p>
+                    <p>School period (Sept-June): <strong id="res-clean-period">0</strong> L</p>
                 </div>
             </div>
         </section>
 
         <section class="plan-section">
-            <h2>3. 30% Reduction Plan in 3 Years</h2>
-            <p>To comply with ESG objectives and the Circular Economy, we aim to reduce overall consumption by 30%. These are our target goals for Year 3:</p>
+            <h2>3. Three-Year 30% Reduction Plan (Circular Economy)</h2>
+            <p>To comply with ESG objectives, we have designed a 3-year plan to reduce overall consumption by 30%. Below are the target goals and the circular economy actions based on the ITB Leaks data:</p>
             <ul id="reduction-goals">
-                <li>Annual electricity target: <span id="obj-elec">0</span> kWh (Action: Climate optimization and automatic server shutdown).</li>
-                <li>Annual water target: <span id="obj-water">0</span> L (Action: Repairing night leaks and tap aerators).</li>
-                <li>Annual office supplies target: <span id="obj-sup">0</span> € (Action: Zero paper digitization and marker refills).</li>
-                <li>Annual cleaning target: <span id="obj-clean">0</span> L (Action: Bulk purchasing and concentrated ecological products).</li>
+                <li><strong>Electricity Target: <span id="obj-elec">0</span> kWh.</strong> <br><em>Action:</em> Currently, our 30.94 kWp solar plant only covers 15% of our needs. We will expand solar capacity and create an automated script to shut down classroom PCs at night.</li>
+                <li><strong>Water Target: <span id="obj-water">0</span> L.</strong> <br><em>Action:</em> The ITB Leaks showed anomalous night peaks of 190 L/h. We will install smart valves to cut off the water supply during non-school hours, eliminating these leaks entirely.</li>
+                <li><strong>Office Supplies Target: <span id="obj-sup">0</span> €.</strong> <br><em>Action:</em> Transition to a "Zero Paper" policy through cloud digitization and shift to circular procurement (e.g., refillable whiteboard markers instead of single-use).</li>
+                <li><strong>Cleaning Target: <span id="obj-clean">0</span> L.</strong> <br><em>Action:</em> Implement bulk purchasing to eliminate plastic packaging and switch to highly concentrated, biodegradable cleaning formulas.</li>
             </ul>
         </section>
     </main>
