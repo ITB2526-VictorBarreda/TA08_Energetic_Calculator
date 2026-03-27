@@ -1,81 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ca">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESG Calculator - ITB</title>
+    <title>Inici | Projecte ASG ITB</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>ESG Savings Calculator (ITB)</h1>
-        <p>Advanced assessment and projection of consumption with seasonality</p>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🌍 ITB Sostenible</a>
+            <ul class="nav-links">
+                <li><a href="index.html" class="active">Inici</a></li>
+                <li><a href="dades.html">Anàlisi de Dades</a></li>
+                <li><a href="calculadora.html">Calculadora Energètica</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <h1>Pla de Sostenibilitat ITB</h1>
+        <p>Avaluació i diagnòstic segons els criteris Ambientals, Socials i de Governança (ASG) per a l'Institut Tecnològic de Barcelona.</p>
     </header>
 
     <main>
-        <section class="calculator-section">
-            <h2>1. Enter Base Monthly Data</h2>
-            <p>Enter the average consumption of a standard month. The algorithm will apply seasonal variations (summer closures, winter heating, etc.).</p>
-
-            <form id="calc-form">
-                <div class="input-group">
-                    <label for="elec-base">Base Electricity (kWh/month):</label>
-                    <input type="number" id="elec-base" required placeholder="Ex: 5000">
-                </div>
-                <div class="input-group">
-                    <label for="water-base">Base Water (Liters/month):</label>
-                    <input type="number" id="water-base" required placeholder="Ex: 15000">
-                </div>
-                <div class="input-group">
-                    <label for="supplies-base">Office Supplies (€/month):</label>
-                    <input type="number" id="supplies-base" required placeholder="Ex: 300">
-                </div>
-                <div class="input-group">
-                    <label for="cleaning-base">Cleaning Products (Liters/month):</label>
-                    <input type="number" id="cleaning-base" required placeholder="Ex: 50">
-                </div>
-                <button type="button" onclick="calculateConsumption()">Calculate Projections</button>
-            </form>
-        </section>
-
-        <section class="results-section" id="results" style="display:none;">
-            <h2>2. Projected Results (With Advanced Seasonality)</h2>
-            <div class="results-grid">
-                <div class="result-card">
-                    <h3>Electricity</h3>
-                    <p>Full next year: <strong id="res-elec-year">0</strong> kWh</p>
-                    <p>School period (Sept-June): <strong id="res-elec-period">0</strong> kWh</p>
-                </div>
-                <div class="result-card">
-                    <h3>Water</h3>
-                    <p>Full next year: <strong id="res-water-year">0</strong> L</p>
-                    <p>School period (Sept-June): <strong id="res-water-period">0</strong> L</p>
-                </div>
-                <div class="result-card">
-                    <h3>Office Supplies</h3>
-                    <p>Full next year: <strong id="res-sup-year">0</strong> €</p>
-                    <p>School period (Sept-June): <strong id="res-sup-period">0</strong> €</p>
-                </div>
-                <div class="result-card">
-                    <h3>Cleaning Products</h3>
-                    <p>Full next year: <strong id="res-clean-year">0</strong> L</p>
-                    <p>School period (Sept-June): <strong id="res-clean-period">0</strong> L</p>
-                </div>
+        <h2 class="section-title">Els Tres Pilars del Projecte</h2>
+        <div class="grid-3">
+            <div class="card">
+                <h3>🌿 Ambiental</h3>
+                <p>Analitzem la petjada ecològica del centre: consum elèctric, fuites d'aigua i gestió de residus (RAEE). L'objectiu és reduir el malbaratament i fer una transició cap a l'autoconsum solar ple.</p>
             </div>
-        </section>
+            <div class="card">
+                <h3>👥 Social</h3>
+                <p>La tecnologia ha de millorar l'educació, no perjudicar-la. Avaluem la bretxa digital, els riscos ergonòmics i proposem solucions a les distraccions digitals per garantir el benestar de l'alumnat.</p>
+            </div>
+            <div class="card">
+                <h3>🏛️ Governança</h3>
+                <p>Fomentem polítiques de compra ètiques i transparents. Exigim als proveïdors tecnològics certificacions d'eficiència i garantim el compliment estricte de la privacitat de les dades (RGPD).</p>
+            </div>
+        </div>
 
-        <section class="plan-section">
-            <h2>3. Three-Year 30% Reduction Plan (Circular Economy)</h2>
-            <p>To comply with ESG objectives, we have designed a 3-year plan to reduce overall consumption by 30%. Below are the target goals and the circular economy actions based on the ITB Leaks data:</p>
-            <ul id="reduction-goals">
-                <li><strong>Electricity Target: <span id="obj-elec">0</span> kWh.</strong> <br><em>Action:</em> Currently, our 30.94 kWp solar plant only covers 15% of our needs. We will expand solar capacity and create an automated script to shut down classroom PCs at night.</li>
-                <li><strong>Water Target: <span id="obj-water">0</span> L.</strong> <br><em>Action:</em> The ITB Leaks showed anomalous night peaks of 190 L/h. We will install smart valves to cut off the water supply during non-school hours, eliminating these leaks entirely.</li>
-                <li><strong>Office Supplies Target: <span id="obj-sup">0</span> €.</strong> <br><em>Action:</em> Transition to a "Zero Paper" policy through cloud digitization and shift to circular procurement (e.g., refillable whiteboard markers instead of single-use).</li>
-                <li><strong>Cleaning Target: <span id="obj-clean">0</span> L.</strong> <br><em>Action:</em> Implement bulk purchasing to eliminate plastic packaging and switch to highly concentrated, biodegradable cleaning formulas.</li>
-            </ul>
-        </section>
+        <div class="card" style="text-align: center; padding: 50px 20px;">
+            <h2>L'Objectiu de Reducció del 30%</h2>
+            <p style="max-width: 800px; margin: 0 auto; color: #64748b; font-size: 1.1rem;">
+                A partir de les dades reals obtingudes dels sistemes de l'ITB, hem creat una Calculadora Energètica intel·ligent. Aquesta eina ens permet dissenyar un full de ruta clar basat en l'Economia Circular per <strong>reduir un 30% el consum global en els pròxims 3 anys</strong>.
+            </p>
+            <br>
+            <a href="calculadora.html"><button class="btn-primary" style="width: auto;">Accedir a la Calculadora</button></a>
+        </div>
     </main>
-
-    <script src="script.js"></script>
 </body>
 </html>

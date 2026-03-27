@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora i Solucions | Projecte ASG ITB</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">🌍 ITB Sostenible</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Inici</a></li>
+                <li><a href="dades.html">Anàlisi de Dades</a></li>
+                <li><a href="calculadora.html" class="active">Calculadora Energètica</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="hero" style="padding: 40px 20px;">
+        <h1>Calculadora i Pla d'Acció</h1>
+        <p>Projeccions de consum i solucions tècniques realistes per assolir un -30%</p>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>1. Introdueix les Dades Base Mensuals</h2>
+            <p style="margin-bottom: 25px;">Valors basats en l'anàlisi de la facturació real de l'ITB.</p>
+            <form id="calc-form" class="bespoke-form-grid">
+                <div class="input-group-bespoke">
+                    <label for="elec-base" class="bespoke-label">Electricitat (kWh/mes):</label>
+                    <div class="bespoke-input-with-icon">
+                        <span class="bespoke-icon">⚡</span>
+                        <input type="number" id="elec-base" required value="12000" class="bespoke-input">
+                    </div>
+                </div>
+                <div class="input-group-bespoke">
+                    <label for="water-base" class="bespoke-label">Aigua (Litres/mes):</label>
+                    <div class="bespoke-input-with-icon">
+                        <span class="bespoke-icon">💧</span>
+                        <input type="number" id="water-base" required value="73000" class="bespoke-input">
+                    </div>
+                </div>
+                <div class="input-group-bespoke">
+                    <label for="supplies-base" class="bespoke-label">Material Oficina (€/mes):</label>
+                    <div class="bespoke-input-with-icon">
+                        <span class="bespoke-icon">📎</span>
+                        <input type="number" id="supplies-base" required value="300" class="bespoke-input">
+                    </div>
+                </div>
+                <div class="input-group-bespoke">
+                    <label for="cleaning-base" class="bespoke-label">Neteja i Higiene (€/mes):</label>
+                    <div class="bespoke-input-with-icon">
+                        <span class="bespoke-icon">🧹</span>
+                        <input type="number" id="cleaning-base" required value="750" class="bespoke-input">
+                    </div>
+                </div>
+            </form>
+            <button class="btn-primary" type="button" onclick="calcularConsums()">Executar Projeccions i Solucions</button>
+        </section>
+
+        <section class="card" id="results" style="display:none;">
+            <h2>2. Projecció de Despesa (Amb Estacionalitat)</h2>
+            <div class="results-grid">
+                <div class="result-card">
+                    <div style="font-size: 2rem;">⚡</div>
+                    <h3>Electricitat</h3>
+                    <p>Total Anual: <strong id="res-elec-year" class="highlight">0</strong></p>
+                    <p>Període Lectiu: <strong id="res-elec-period">0</strong></p>
+                </div>
+                <div class="result-card">
+                    <div style="font-size: 2rem;">💧</div>
+                    <h3>Aigua</h3>
+                    <p>Total Anual: <strong id="res-water-year" class="highlight">0</strong></p>
+                    <p>Període Lectiu: <strong id="res-water-period">0</strong></p>
+                </div>
+                <div class="result-card">
+                    <div style="font-size: 2rem;">📎</div>
+                    <h3>Material Oficina</h3>
+                    <p>Total Anual: <strong id="res-sup-year" class="highlight">0</strong></p>
+                    <p>Període Lectiu: <strong id="res-sup-period">0</strong></p>
+                </div>
+                <div class="result-card">
+                    <div style="font-size: 2rem;">🧹</div>
+                    <h3>Neteja i Higiene</h3>
+                    <p>Total Anual: <strong id="res-clean-year" class="highlight">0</strong></p>
+                    <p>Període Lectiu: <strong id="res-clean-period">0</strong></p>
+                </div>
+            </div>
+
+            <h2 style="margin-top: 50px; color: var(--eco-dark);">3. Pla Tècnic de Reducció del 30% a 3 anys</h2>
+            <p style="margin-bottom: 20px;">Accions específiques basades en l'anomalia de les dades detectades fora de l'horari lectiu i a les factures.</p>
+
+            <div class="grid-1" style="display: flex; flex-direction: column; gap: 20px;">
+
+                <div style="background: #f8fafc; padding: 25px; border-radius: 8px; border-left: 6px solid var(--ocean-blue); border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e0f2fe; padding-bottom: 15px; margin-bottom: 15px;">
+                        <h3 style="margin: 0; color: var(--ocean-blue); font-size: 1.4rem;">💧 Gestió de l'Aigua</h3>
+                        <strong style="background: #e0f2fe; padding: 8px 12px; border-radius: 5px; color: var(--ocean-blue);">Objectiu Reducció: <span id="obj-water">0</span> L/any</strong>
+                    </div>
+                    <p style="margin: 0 0 10px 0; color: #334155;"><strong>🔍 Diagnòstic Analític (Basat en facturació real):</strong> Segons l'històric de factures aportades, l'institut té un consum d'uns 803.000 Litres anuals. Creuant aquestes dades amb el calendari, detectem anomalies greus, com un consum de 104 m³ facturats a l'estiu (juliol-agost) amb el centre tancat. L'algorisme calcula que un 25% del consum anual correspon a fuites, suposant <strong>una pèrdua de <span id="anomalia-water" style="color: red; font-weight: bold;">0</span> L anuals</strong>.</p>
+                    <p style="margin: 0 0 5px 0; color: #334155;"><strong>⚙️ Solució d'Impacte:</strong></p>
+                    <ul style="margin: 0 0 15px 0; padding-left: 20px; color: var(--text-muted);">
+                        <li><strong>Any 1:</strong> Instal·lació d'una <em>electrovàlvula de tall intel·ligent</em> a l'escomesa principal vinculada al sistema d'alarma. En armar l'alarma a la nit, es talla físicament el subministrament. Elimina la fuita del 25% de forma instantània.</li>
+                        <li><strong>Any 2-3:</strong> Substitució a les plantes baixes (màxima afluència) d'aixetes manuals per polsadors temporitzats per aconseguir un estalvi extra del 5% operatiu.</li>
+                    </ul>
+                </div>
+
+                <div style="background: #f8fafc; padding: 25px; border-radius: 8px; border-left: 6px solid #f59e0b; border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #fef3c7; padding-bottom: 15px; margin-bottom: 15px;">
+                        <h3 style="margin: 0; color: #b45309; font-size: 1.4rem;">⚡ Eficiència Elèctrica</h3>
+                        <strong style="background: #fef3c7; padding: 8px 12px; border-radius: 5px; color: #b45309;">Objectiu Reducció: <span id="obj-elec">0</span> kWh/any</strong>
+                    </div>
+                    <p style="margin: 0 0 10px 0; color: #334155;"><strong>🔍 Diagnòstic Analític:</strong> El càlcul projectat revela que una part important del consum es produeix amb l'institut tancat. Es calcula un <strong>consum fantasma de <span id="anomalia-elec" style="color: red; font-weight: bold;">0</span> a l'any</strong> derivat de PCs, monitors i infraestructura de xarxa que no s'apaga correctament.</p>
+                    <p style="margin: 0 0 5px 0; color: #334155;"><strong>⚙️ Solució d'Impacte:</strong></p>
+                    <ul style="margin: 0 0 15px 0; padding-left: 20px; color: var(--text-muted);">
+                        <li><strong>Any 1 (0€ Cost):</strong> Desplegament massiu d'una política <em>GPO</em> al Windows Server que forci un "Shutdown" de tots els ordinadors a les 21:30h, garantint 0W de consum fantasma per aula a la nit.</li>
+                        <li><strong>Any 2-3:</strong> Inversió estratègica en plaques solars per cobrir la sala de servidors (CPD) 24/7.</li>
+                    </ul>
+                </div>
+
+                <div style="background: #f8fafc; padding: 25px; border-radius: 8px; border-left: 6px solid var(--text-muted); border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 15px;">
+                        <h3 style="margin: 0; color: var(--text-main); font-size: 1.4rem;">📎 Material d'Oficina</h3>
+                        <strong style="background: #e2e8f0; padding: 8px 12px; border-radius: 5px; color: var(--text-main);">Objectiu Reducció: <span id="obj-sup">0</span> €/any</strong>
+                    </div>
+                    <p style="margin: 0 0 10px 0; color: #334155;"><strong>🔍 Diagnòstic:</strong> Forta dependència del paper i plàstics d'un sol ús (retoladors de pissarra blanca).</p>
+                    <p style="margin: 0 0 5px 0; color: #334155;"><strong>⚙️ Solució a 3 anys:</strong></p>
+                    <ul style="margin: 0 0 15px 0; padding-left: 20px; color: var(--text-muted);">
+                        <li><strong>Any 1:</strong> Implantació de control d'impressió establint una quota dura per alumne.</li>
+                        <li><strong>Any 2-3:</strong> Obligació de subministrar retoladors de pissarra recarregables i estacions de recàrrega de tinta, reduint dràsticament el plàstic llançat.</li>
+                    </ul>
+                </div>
+
+                <div style="background: #f8fafc; padding: 25px; border-radius: 8px; border-left: 6px solid var(--eco-primary); border-top: 1px solid #e2e8f0; border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d1fae5; padding-bottom: 15px; margin-bottom: 15px;">
+                        <h3 style="margin: 0; color: var(--eco-primary); font-size: 1.4rem;">🧹 Higiene i Neteja</h3>
+                        <strong style="background: #d1fae5; padding: 8px 12px; border-radius: 5px; color: var(--eco-primary);">Objectiu Reducció: <span id="obj-clean">0</span> €/any</strong>
+                    </div>
+                    <p style="margin: 0 0 10px 0; color: #334155;"><strong>🔍 Diagnòstic:</strong> Despesa molt alta en paper eixugamans d'un sol ús i químics industrials.</p>
+                    <p style="margin: 0 0 5px 0; color: #334155;"><strong>⚙️ Solució a 3 anys:</strong></p>
+                    <ul style="margin: 0 0 15px 0; padding-left: 20px; color: var(--text-muted);">
+                        <li><strong>Any 1:</strong> Substitució del paper per assecadors de mans elèctrics d'alta velocitat.</li>
+                        <li><strong>Any 2-3:</strong> Sistemes de dosificació automàtica per al producte químic concentrat, estalviant entre un 20-30% al no poder sobredosificar a mà.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="background: linear-gradient(135deg, var(--eco-dark), var(--ocean-blue)); color: white; padding: 30px; border-radius: 12px; margin-top: 40px; text-align: center; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);">
+                <h3 style="margin-top: 0; font-size: 1.8rem;">Impacte Global Anual Projectat</h3>
+                <p style="font-size: 1.1rem; margin-bottom: 20px; color: #e0f2fe;">La implementació d'aquestes mesures permetrà el següent retorn ASG:</p>
+                <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px;">
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; min-width: 200px;">
+                        <strong style="font-size: 2.5rem; display: block;" id="estalvi-co2">0</strong>
+                        <span style="font-size: 1.2rem; font-weight: 300;">Kg de CO₂ Evitats / any</span>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; min-width: 200px;">
+                        <strong style="font-size: 2.5rem; display: block;" id="estalvi-euros">0</strong>
+                        <span style="font-size: 1.2rem; font-weight: 300;">Euros Estalviats (€) / any</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
