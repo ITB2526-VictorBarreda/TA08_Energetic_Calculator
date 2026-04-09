@@ -33,10 +33,6 @@ function calcularConsums() {
         }
     }
 
-    // Diagnòstic d'anomalies inicial
-    let waterFuitaYear = waterYear * 0.25;
-    let elecFantasmaYear = elecYear * 0.15;
-
     // --- RENDERITZAT BÀSIC ---
     const resultsSection = document.getElementById('results');
     if (resultsSection) resultsSection.style.display = 'block';
@@ -50,30 +46,35 @@ function calcularConsums() {
     updateElement('res-water-year', waterYear, 'L'); updateElement('res-water-period', waterPeriod, 'L');
     updateElement('res-sup-year', supYear, '€'); updateElement('res-sup-period', supPeriod, '€');
     updateElement('res-clean-year', cleanYear, '€'); updateElement('res-clean-period', cleanPeriod, '€');
-    updateElement('anomalia-water', waterFuitaYear, 'L'); updateElement('anomalia-elec', elecFantasmaYear, 'kWh');
 
-    // --- CÀLCUL A 3 ANYS AMB IPC DE +3% ANUAL ---
+    // --- CÀLCUL A 3 ANYS AMB VARIABLES I IPC DE +3% ANUAL ---
     const costKWh = 0.25;
     const costLitre = 0.002;
-    const ipcAnual = 1.03; // 3% d'inflació
+    const ipcAnual = 1.03; // Increment del 3% cada any
 
-    // Funció que omple les taules de 3 anys per a cada categoria
     const omplirTaulaProjeccio = (prefix, volumBase, preuUnitat) => {
         let costFinalAny3 = 0;
+        let unitat = (prefix === 'elec') ? 'kWh' : (prefix === 'water') ? 'L' : '€';
 
-        for (let any = 0; any <= 3; any++) {
-            let factorReduccio = 1 - (any * 0.10); // Any 0: 100%, Any 1: 90%, Any 2: 80%, Any 3: 70%
-            let factorIpc = Math.pow(ipcAnual, any); // Interès compost (ex: 1.03^3)
+        // Any 0 (Sense reducció i sense inflació)
+        updateElement(`${prefix}-y0-cons`, volumBase, unitat);
+        updateElement(`${prefix}-y0-cost`, volumBase * preuUnitat, '€');
+
+        for (let any = 1; any <= 3; any++) {
+            // Llegeix el percentatge indicat per l'usuari a l'HTML
+            let inputCamp = document.getElementById(`${prefix}-pct-y${any}`);
+            let percentatge = inputCamp ? (parseFloat(inputCamp.value) || 0) : 0;
+
+            let factorReduccio = 1 - (percentatge / 100);
+            let factorIpc = Math.pow(ipcAnual, any); // Interès compost de l'IPC (Ex: 1.03^2 = 1.0609)
 
             let volumObjectiu = volumBase * factorReduccio;
             let reduccioAssolida = volumBase - volumObjectiu;
             let pressupostProjectat = volumObjectiu * preuUnitat * factorIpc;
 
-            let unitat = (prefix === 'elec') ? 'kWh' : (prefix === 'water') ? 'L' : '€';
-
             updateElement(`${prefix}-y${any}-cons`, volumObjectiu, unitat);
             updateElement(`${prefix}-y${any}-cost`, pressupostProjectat, '€');
-            if (any > 0) updateElement(`${prefix}-y${any}-red`, reduccioAssolida, unitat);
+            updateElement(`${prefix}-y${any}-red`, reduccioAssolida, unitat);
 
             if (any === 3) costFinalAny3 = pressupostProjectat;
         }
@@ -85,9 +86,8 @@ function calcularConsums() {
     let costRealY3Sup = omplirTaulaProjeccio('sup', supYear, 1);
     let costRealY3Clean = omplirTaulaProjeccio('clean', cleanYear, 1);
 
-    // --- IMPACTE GLOBAL I ESTALVI REAL FRONT A LA INFLACIÓ ---
+    // --- IMPACTE GLOBAL (Manté la suma de l'Any 3 com a referència) ---
     let pressupostBaseTotal = (elecYear * costKWh) + (waterYear * costLitre) + supYear + cleanYear;
-    // Si no fem res, la inflació a 3 anys fa pujar el preu base un 9,27%
     let pressupostInercialAny3 = pressupostBaseTotal * Math.pow(ipcAnual, 3);
     let pressupostAssolitAny3 = costRealY3Elec + costRealY3Water + costRealY3Sup + costRealY3Clean;
 
