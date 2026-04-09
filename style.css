@@ -69,3 +69,28 @@ main { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
 .result-card { text-align: center; border: 1px solid var(--border-color); padding: 20px; border-radius: 12px; transition: 0.3s; background: #fff;}
 .result-card:hover { border-color: var(--eco-primary); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
 .highlight { color: var(--eco-primary); font-size: 1.3rem; font-weight: 700; }
+
+.projection-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+.projection-table th, .projection-table td {
+    padding: 12px 15px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+}
+.projection-table th {
+    background: #f1f5f9;
+    font-weight: 600;
+    color: var(--text-main);
+}
+.projection-table tbody tr:last-child {
+    background-color: #f0fdf4; /* Verd clar per a l'any 3 */
+    font-weight: 700;
+}

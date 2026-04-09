@@ -15,22 +15,16 @@ function calcularConsums() {
     for (let month = 1; month <= 12; month++) {
         let elecFactor = 1.0, waterFactor = 1.0, supFactor = 1.0, cleanFactor = 1.0;
 
-        if (month === 8) { // Agost
-            elecFactor = 0.15; waterFactor = 0.10; supFactor = 0.0; cleanFactor = 0.10;
-        } else if (month === 7) { // Juliol
-            elecFactor = 0.8; waterFactor = 0.9; supFactor = 0.2; cleanFactor = 0.8;
-        } else if (month === 12 || month === 1 || month === 2) { // Hivern
-            elecFactor = 1.3;
-        } else if (month === 9) { // Setembre
-            supFactor = 2.0; cleanFactor = 1.2;
-        }
+        if (month === 8) { elecFactor = 0.15; waterFactor = 0.10; supFactor = 0.0; cleanFactor = 0.10; }
+        else if (month === 7) { elecFactor = 0.8; waterFactor = 0.9; supFactor = 0.2; cleanFactor = 0.8; }
+        else if (month === 12 || month === 1 || month === 2) { elecFactor = 1.3; }
+        else if (month === 9) { supFactor = 2.0; cleanFactor = 1.2; }
 
         elecYear += elecBase * elecFactor;
         waterYear += waterBase * waterFactor;
         supYear += supBase * supFactor;
         cleanYear += cleanBase * cleanFactor;
 
-        // Període lectiu
         if (month !== 7 && month !== 8) {
             elecPeriod += elecBase * elecFactor;
             waterPeriod += waterBase * waterFactor;
@@ -39,13 +33,11 @@ function calcularConsums() {
         }
     }
 
-    // 2. Càlcul de Fuites basat en la realitat de les factures
-    // S'estima un 25% de fuita estructural (basat en els 104 m³ d'estiu del JSON/Factures)
+    // Diagnòstic d'anomalies inicial
     let waterFuitaYear = waterYear * 0.25;
-    // Assumim que els PCs encesos de nit suposen el 15% del total elèctric
     let elecFantasmaYear = elecYear * 0.15;
 
-    // --- RENDERITZAT ---
+    // --- RENDERITZAT BÀSIC ---
     const resultsSection = document.getElementById('results');
     if (resultsSection) resultsSection.style.display = 'block';
 
@@ -54,41 +46,54 @@ function calcularConsums() {
         if (el) el.innerText = Math.round(value).toLocaleString() + (suffix ? ' ' + suffix : '');
     };
 
-    updateElement('res-elec-year', elecYear, 'kWh');
-    updateElement('res-elec-period', elecPeriod, 'kWh');
-    updateElement('res-water-year', waterYear, 'L');
-    updateElement('res-water-period', waterPeriod, 'L');
-    updateElement('res-sup-year', supYear, '€');
-    updateElement('res-sup-period', supPeriod, '€');
-    updateElement('res-clean-year', cleanYear, '€');
-    updateElement('res-clean-period', cleanPeriod, '€');
+    updateElement('res-elec-year', elecYear, 'kWh'); updateElement('res-elec-period', elecPeriod, 'kWh');
+    updateElement('res-water-year', waterYear, 'L'); updateElement('res-water-period', waterPeriod, 'L');
+    updateElement('res-sup-year', supYear, '€'); updateElement('res-sup-period', supPeriod, '€');
+    updateElement('res-clean-year', cleanYear, '€'); updateElement('res-clean-period', cleanPeriod, '€');
+    updateElement('anomalia-water', waterFuitaYear, 'L'); updateElement('anomalia-elec', elecFantasmaYear, 'kWh');
 
-    updateElement('anomalia-water', waterFuitaYear, 'L');
-    updateElement('anomalia-elec', elecFantasmaYear, 'kWh');
+    // --- CÀLCUL A 3 ANYS AMB IPC DE +3% ANUAL ---
+    const costKWh = 0.25;
+    const costLitre = 0.002;
+    const ipcAnual = 1.03; // 3% d'inflació
 
-    // 3. Objectius del Pla (Reducció)
-    // Aigua: Eliminem el 25% de fuites + 5% estalvi d'aixetes temporitzades
-    let objWater = waterYear - waterFuitaYear - (waterYear * 0.05);
-    // Llum: Eliminem consum fantasma (15%) + estalvi del 15% amb plaques solars al CPD
-    let objElec = elecYear - elecFantasmaYear - (elecYear * 0.15);
+    // Funció que omple les taules de 3 anys per a cada categoria
+    const omplirTaulaProjeccio = (prefix, volumBase, preuUnitat) => {
+        let costFinalAny3 = 0;
 
-    let objSup = supYear * 0.70;
-    let objClean = cleanYear * 0.70;
+        for (let any = 0; any <= 3; any++) {
+            let factorReduccio = 1 - (any * 0.10); // Any 0: 100%, Any 1: 90%, Any 2: 80%, Any 3: 70%
+            let factorIpc = Math.pow(ipcAnual, any); // Interès compost (ex: 1.03^3)
 
-    updateElement('obj-water', objWater, '');
-    updateElement('obj-elec', objElec, '');
-    updateElement('obj-sup', objSup, '');
-    updateElement('obj-clean', objClean, '');
+            let volumObjectiu = volumBase * factorReduccio;
+            let reduccioAssolida = volumBase - volumObjectiu;
+            let pressupostProjectat = volumObjectiu * preuUnitat * factorIpc;
 
-    // 4. Impacte Global i Retorn Econòmic/Ecològic
-    const estalviElec = elecYear - objElec;
-    const estalviAigua = waterYear - objWater;
-    const estalviMaterial = supYear - objSup;
-    const estalviNeteja = cleanYear - objClean;
+            let unitat = (prefix === 'elec') ? 'kWh' : (prefix === 'water') ? 'L' : '€';
 
-    const eurosEstalviats = (estalviElec * 0.25) + (estalviAigua * 0.002) + estalviMaterial + estalviNeteja;
-    const co2Estalviat = estalviElec * 0.25;
+            updateElement(`${prefix}-y${any}-cons`, volumObjectiu, unitat);
+            updateElement(`${prefix}-y${any}-cost`, pressupostProjectat, '€');
+            if (any > 0) updateElement(`${prefix}-y${any}-red`, reduccioAssolida, unitat);
 
-    updateElement('estalvi-euros', eurosEstalviats, '€');
+            if (any === 3) costFinalAny3 = pressupostProjectat;
+        }
+        return costFinalAny3;
+    };
+
+    let costRealY3Elec = omplirTaulaProjeccio('elec', elecYear, costKWh);
+    let costRealY3Water = omplirTaulaProjeccio('water', waterYear, costLitre);
+    let costRealY3Sup = omplirTaulaProjeccio('sup', supYear, 1);
+    let costRealY3Clean = omplirTaulaProjeccio('clean', cleanYear, 1);
+
+    // --- IMPACTE GLOBAL I ESTALVI REAL FRONT A LA INFLACIÓ ---
+    let pressupostBaseTotal = (elecYear * costKWh) + (waterYear * costLitre) + supYear + cleanYear;
+    // Si no fem res, la inflació a 3 anys fa pujar el preu base un 9,27%
+    let pressupostInercialAny3 = pressupostBaseTotal * Math.pow(ipcAnual, 3);
+    let pressupostAssolitAny3 = costRealY3Elec + costRealY3Water + costRealY3Sup + costRealY3Clean;
+
+    let eurosEstalviatsReals = pressupostInercialAny3 - pressupostAssolitAny3;
+    let co2Estalviat = (elecYear * 0.30) * 0.25;
+
+    updateElement('estalvi-euros', eurosEstalviatsReals, '€');
     updateElement('estalvi-co2', co2Estalviat, 'Kg');
 }
