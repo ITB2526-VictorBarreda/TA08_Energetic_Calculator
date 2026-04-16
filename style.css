@@ -110,3 +110,259 @@ main { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
     border-color: #0284c7;
     box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.2);
 }
+/* Estilos para el panel interactivo de soluciones */
+.category-block {
+    background: #f8fafc;
+    padding: 25px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.actions-panel {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    margin-bottom: 20px;
+}
+
+.action-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap; /* Para móviles */
+}
+
+.action-item label {
+    font-size: 0.95rem;
+    color: #475569;
+    flex: 1;
+    min-width: 200px;
+}
+
+.range-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+    min-width: 200px;
+}
+
+/* Diseño del Slider */
+input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    background: transparent;
+}
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 18px;
+    width: 18px;
+    border-radius: 50%;
+    background: #0284c7;
+    cursor: pointer;
+    margin-top: -6px;
+}
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 6px;
+    cursor: pointer;
+    background: #cbd5e1;
+    border-radius: 3px;
+}
+input[type=range]:focus {
+    outline: none;
+}
+
+.range-wrapper span {
+    font-weight: bold;
+    color: #0284c7;
+    width: 45px;
+    text-align: right;
+}
+
+.target-text {
+    text-align: right;
+    margin: 15px 0 0 0;
+    font-size: 1.1rem;
+    color: #334155;
+    border-top: 1px dashed #cbd5e1;
+    padding-top: 10px;
+}
+/* =========================================
+   ESTILS DEL SIMULADOR D'ACCIONS (SECCIÓ 3)
+   ========================================= */
+
+.simulator-title {
+    margin-top: 50px;
+    color: var(--eco-dark);
+}
+
+.simulator-subtitle {
+    margin-bottom: 20px;
+}
+
+.simulator-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Colors específics de cada bloc i el seu títol */
+.block-water { border-left: 6px solid var(--ocean-blue); }
+.block-water h3 { color: var(--ocean-blue); }
+
+.block-elec { border-left: 6px solid var(--elec-color); }
+.block-elec h3 { color: #b45309; } /* Un taronja més fosc pel text */
+
+.block-sup { border-left: 6px solid var(--text-muted); }
+.block-sup h3 { color: var(--text-main); }
+
+.block-clean { border-left: 6px solid var(--eco-primary); }
+.block-clean h3 { color: var(--eco-primary); }
+/* =========================================
+   ESTILS UX ("A prova de tontos")
+   ========================================= */
+
+/* Fem que les etiquetes de les accions semblin frases normals, no codi */
+.action-item label {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #1e293b;
+    margin-bottom: 5px;
+}
+
+/* El resum visual gegant */
+.user-friendly-summary {
+    background-color: #f1f5f9;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.1rem;
+    color: #334155;
+    border: 2px dashed #cbd5e1;
+}
+
+.big-percent {
+    font-size: 2rem;
+    color: var(--eco-primary);
+    margin: 0 5px;
+}
+
+/* Estil del desplegable de les taules complexes */
+.tech-details {
+    margin-top: 15px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+}
+
+.tech-details summary {
+    padding: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #64748b;
+    background-color: #f8fafc;
+    border-radius: 6px;
+    list-style: none; /* Amaga la fletxa per defecte en alguns navegadors */
+}
+
+/* Fletxa personalitzada pel desplegable */
+.tech-details summary::-webkit-details-marker {
+    display: none;
+}
+.tech-details summary::before {
+    content: "👉 ";
+}
+.tech-details[open] summary::before {
+    content: "👇 ";
+}
+
+/* Espai extra per la taula quan s'obre el desplegable */
+.tech-details .projection-table {
+    margin: 15px auto;
+    width: 95%;
+}
+/* =========================================
+   ESTILS DELS SLIDERS (BARRAS MÉS USUARI)
+   ========================================= */
+
+/* Contenidor amb forma de càpsula per cada barra */
+.slider-ui {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    background: #f8fafc;
+    padding: 10px 15px;
+    border-radius: 50px;
+    border: 1px solid #e2e8f0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Textos "Gens" i "Màxim" */
+.slider-min, .slider-max {
+    font-size: 0.75rem;
+    color: #94a3b8;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* La píndola que mostra el número final (ex: 10%) */
+.slider-badge {
+    background: var(--ocean-blue, #0284c7); /* Pots canviar el color per a cada bloc si vols */
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    min-width: 48px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* --- DISSENY DE LA BARRA (TRACK I THUMB) --- */
+.friendly-slider {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    border-radius: 4px;
+    background: #cbd5e1;
+    outline: none;
+}
+
+/* El "botó" rodó que arrossegues amb el dit (Chrome/Safari) */
+.friendly-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--ocean-blue, #0284c7);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: transform 0.1s;
+}
+
+/* Efecte en tocar el botó */
+.friendly-slider::-webkit-slider-thumb:active {
+    transform: scale(1.15);
+    background: var(--ocean-blue, #0284c7);
+}
+
+/* El mateix botó per a Firefox */
+.friendly-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--ocean-blue, #0284c7);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+}

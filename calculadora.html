@@ -3,251 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora i Solucions | Projecte ASG ITB</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Calculadora d'Eficiència - Institut</title>
+    <link rel="stylesheet" href="calculadora.css">
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <a href="index.html" class="nav-logo">🌍 ITB Sostenible</a>
-            <ul class="nav-links">
-                <li><a href="index.html">Inici</a></li>
-                <li><a href="dades.html">Anàlisi de Dades</a></li>
-                <li><a href="calculadora.html" class="active">Calculadora Energètica</a></li>
-            </ul>
-        </div>
-    </nav>
 
-    <header class="hero" style="padding: 40px 20px;">
-        <h1>Calculadora i Pla d'Acció</h1>
-        <p>Projeccions de consum i solucions tècniques realistes per assolir un -30%</p>
+    <header class="header">
+        <h1>🌱 Calculadora d'Eficiència Energètica</h1>
+        <p>Projecte cap a un institut més sostenible (Objectiu 30% estalvi)</p>
     </header>
 
-    <main>
-        <section class="card">
-            <h2>1. Introdueix les Dades Base Mensuals</h2>
-            <p style="margin-bottom: 25px;">Valors basats en l'anàlisi de la facturació real de l'ITB.</p>
-            <form id="calc-form" class="bespoke-form-grid">
-                <div class="input-group-bespoke">
-                    <label for="elec-base" class="bespoke-label">Electricitat (kWh/mes):</label>
-                    <div class="bespoke-input-with-icon">
-                        <span class="bespoke-icon">⚡</span>
-                        <input type="number" id="elec-base" required value="12000" class="bespoke-input">
-                    </div>
+    <main class="container">
+
+        <div class="instructions-box">
+            <h3>👋 Benvingut/da! Com funciona aquesta eina?</h3>
+            <ol>
+                <li><strong>Pas 1:</strong> Introdueix les dades de les factures actuals del centre.</li>
+                <li><strong>Pas 2:</strong> Mou els botons per decidir quines mesures aplicar. L'objectiu recomanat és arribar a un 30% d'estalvi!</li>
+                <li><strong>Pas 3:</strong> La calculadora et mostrarà automàticament els diners i el CO2 que estalviareu d'aquí a 3 anys.</li>
+            </ol>
+        </div>
+
+        <section class="card form-section">
+            <h2>Pas 1: Les teves dades actuals 📄</h2>
+            <p class="subtitle">Introdueix els valors aproximats d'un mes normal d'hivern o de curs. Nosaltres calcularem la resta de l'any.</p>
+
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>⚡ Electricitat (kWh/mes):</label>
+                    <input type="number" id="elec-base" value="12000" min="0">
+                    <small class="help-text">Ho trobaràs a la gràfica de la teva factura de la llum.</small>
                 </div>
-                <div class="input-group-bespoke">
-                    <label for="water-base" class="bespoke-label">Aigua (Litres/mes):</label>
-                    <div class="bespoke-input-with-icon">
-                        <span class="bespoke-icon">💧</span>
-                        <input type="number" id="water-base" required value="73000" class="bespoke-input">
-                    </div>
+                <div class="input-group">
+                    <label>💧 Aigua (Litres/mes):</label>
+                    <input type="number" id="water-base" value="73500" min="0">
+                    <small class="help-text">Si la factura està en m³, multiplica-ho per 1000.</small>
                 </div>
-                <div class="input-group-bespoke">
-                    <label for="supplies-base" class="bespoke-label">Material Oficina (€/mes):</label>
-                    <div class="bespoke-input-with-icon">
-                        <span class="bespoke-icon">📎</span>
-                        <input type="number" id="supplies-base" required value="300" class="bespoke-input">
-                    </div>
+                <div class="input-group">
+                    <label>📎 Material Oficina (€/mes):</label>
+                    <input type="number" id="supplies-base" value="300" min="0">
+                    <small class="help-text">Despesa mitjana en paper, tòner i bolígrafs.</small>
                 </div>
-                <div class="input-group-bespoke">
-                    <label for="cleaning-base" class="bespoke-label">Neteja i Higiene (€/mes):</label>
-                    <div class="bespoke-input-with-icon">
-                        <span class="bespoke-icon">🧹</span>
-                        <input type="number" id="cleaning-base" required value="750" class="bespoke-input">
-                    </div>
+                <div class="input-group">
+                    <label>🧹 Neteja i Higiene (€/mes):</label>
+                    <input type="number" id="cleaning-base" value="750" min="0">
+                    <small class="help-text">Cost en paper de mans, sabó i productes químics.</small>
                 </div>
-            </form>
-            <button class="btn-primary" type="button" onclick="calcularConsums()">Executar Projeccions i Solucions</button>
+            </div>
+
+            <button class="btn-calculate" onclick="calcularConsums()">🪄 CALCULAR EL MEU ESTALVI</button>
         </section>
 
-        <section class="card" id="results" style="display:none;">
-            <h2>2. Projecció de Despesa (Amb Estacionalitat)</h2>
-            <div class="results-grid">
-                <div class="result-card">
-                    <div style="font-size: 2rem;">⚡</div>
-                    <h3>Electricitat</h3>
-                    <p>Total Anual: <strong id="res-elec-year" class="highlight">0</strong></p>
-                    <p>Període Lectiu: <strong id="res-elec-period">0</strong></p>
-                </div>
-                <div class="result-card">
-                    <div style="font-size: 2rem;">💧</div>
-                    <h3>Aigua</h3>
-                    <p>Total Anual: <strong id="res-water-year" class="highlight">0</strong></p>
-                    <p>Període Lectiu: <strong id="res-water-period">0</strong></p>
-                </div>
-                <div class="result-card">
-                    <div style="font-size: 2rem;">📎</div>
-                    <h3>Material Oficina</h3>
-                    <p>Total Anual: <strong id="res-sup-year" class="highlight">0</strong></p>
-                    <p>Període Lectiu: <strong id="res-sup-period">0</strong></p>
-                </div>
-                <div class="result-card">
-                    <div style="font-size: 2rem;">🧹</div>
-                    <h3>Neteja i Higiene</h3>
-                    <p>Total Anual: <strong id="res-clean-year" class="highlight">0</strong></p>
-                    <p>Període Lectiu: <strong id="res-clean-period">0</strong></p>
-                </div>
+        <div id="results" class="results-section" style="display: none;">
+
+            <div class="success-banner">
+                🎉 <strong>Dades processades amb èxit!</strong> Fixa't en el que pots arribar a estalviar.
             </div>
 
-            <h2 style="margin-top: 50px; color: var(--eco-dark);">3. Taules de Projecció Interactiva (IPC +3% Anual)</h2>
-            <p style="margin-bottom: 20px;">Introdueix l'objectiu de reducció percentual per a cada any. El pressupost es calcula aplicant automàticament un increment del 3% d'IPC anual de forma acumulada.</p>
-
-            <div class="grid-1" style="display: flex; flex-direction: column; gap: 20px;">
-
-                <div style="background: #f8fafc; padding: 25px; border-radius: 8px; border-left: 6px solid var(--ocean-blue); border: 1px solid #e2e8f0;">
-                    <h3 style="margin: 0 0 15px 0; color: var(--ocean-blue); font-size: 1.4rem;">💧 Gestió de l'Aigua</h3>
-                    <table class="projection-table">
-                        <thead>
-                            <tr><th>Fase de Reducció</th><th>Consum Objectiu</th><th>Reducció Aconseguida</th><th>Pressupost (Amb IPC)</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Actual (Any 0)</td><td id="water-y0-cons">0</td><td>-</td><td id="water-y0-cost">0</td></tr>
-                            <tr><td>Any 1 (-<input type="number" id="water-pct-y1" value="10" min="0" max="100" class="pct-input" oninput="calcularConsums()">%)</td><td id="water-y1-cons">0</td><td id="water-y1-red" style="color:var(--eco-primary);">0</td><td id="water-y1-cost">0</td></tr>
-                            <tr><td>Any 2 (-<input type="number" id="water-pct-y2" value="20" min="0" max="100" class="pct-input" oninput="calcularConsums()">%)</td><td id="water-y2-cons">0</td><td id="water-y2-red" style="color:var(--eco-primary);">0</td><td id="water-y2-cost">0</td></tr>
-                            <tr><td>Any 3 (-<input type="number" id="water-pct-y3" value="30" min="0" max="100" class="pct-input" oninput="calcularConsums()">%)</td><td id="water-y3-cons">0</td><td id="water-y3-red" style="color:var(--eco-primary);">0</td><td id="water-y3-cost">0</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div style="background: #f8fafc; padding: 25px; border-radius: 8px; border-left: 6px solid #f59e0b; border: 1px solid #e2e8f0;">
-                    <h3 style="margin: 0 0 15px 0; color: #b45309; font-size: 1.4rem;">⚡ Eficiència Elèctrica</h3>
-                    <table class="projection-table">
-                        <thead>
-                            <tr><th>Fase de Reducció</th><th>Consum Objectiu</th><th>Reducció Aconseguida</th><th>Pressupost (Amb IPC)</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Actual (Any 0)</td><td id="elec-y0-cons">0</td><td>-</td><td id="elec-y0-cost">0</td></tr>
-                            <tr><td>Any 1 (-<input type="number" id="elec-pct-y1" value="10" min="0" max="100" class="pct-input" oninput="calcularConsums()">%)</td><td id="elec-y1-cons">0</td><td id="elec-y1-red" style="color:var(--eco-primary);">0</td><td id="elec-y1-cost">0</td></tr>
-                            <tr><td>Any 2 (-<input type="number" id="elec-pct-y2" value="20" min="0" max="100" class="pct-input" oninput="calcularConsums()">%)</td><td id="elec-y2-cons">0</td><td id="elec-y2-red" style="color:var(--eco-primary);">0</td><td id="elec-y2-cost">0</td></tr>
-                            <tr><td>Any 3 (-<input type="number" id="elec-pct-y3" value="30" min="0" max="100" class="pct-input" oninput="calcularConsums()">%)</td><td id="elec-y3-cons">0</td><td id="elec-y3-red" style="color:var(--eco-primary);">0</td><td id="elec-y3-cost">0</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div style="background: #f8fafc; padding: 25px; border-radius: 8px; border-left: 6px solid var(--text-muted); border: 1px solid #e2e8f0;">
-                    <h3 style="margin: 0 0 15px 0; color: var(--text-main); font-size: 1.4rem;">📎 Material i Governança</h3>
-                    <table class="projection-table">
-                        <thead>
-                            <tr><th>Fase de Reducció</th><th>Consum Objectiu</th><th>Reducció Aconseguida</th><th>Pressupost (Amb IPC)</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Actual (Any 0)</td><td id="sup-y0-cons">0</td><td>-</td><td id="sup-y0-cost">0</td></tr>
-                            <tr><td>Any 1 (-<input type="number" id="sup-pct-y1" value="10" min="0" max="100" class="pct-input" oninput="calcularConsums()">%)</td><td id="sup-y1-cons">0</td><td id="sup-y1-red" style="color:var(--eco-primary);">0</td><td id="sup-y1-cost">0</td></tr>
-                            <tr><td>Any 2 (-<input type="number" id="sup-pct-y2" value="20" min="0" max="100" class="pct-input" oninput="calcularConsums()">%)</td><td id="sup-y2-cons">0</td><td id="sup-y2-red" style="color:var(--eco-primary);">0</td><td id="sup-y2-cost">0</td></tr>
-                            <tr><td>Any 3 (-<input type="number" id="sup-pct-y3" value="30" min="0" max="100" class="pct-input" oninput="calcularConsums()">%)</td><td id="sup-y3-cons">0</td><td id="sup-y3-red" style="color:var(--eco-primary);">0</td><td id="sup-y3-cost">0</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div style="background: #f8fafc; padding: 25px; border-radius: 8px; border-left: 6px solid var(--eco-primary); border: 1px solid #e2e8f0;">
-                    <h3 style="margin: 0 0 15px 0; color: var(--eco-primary); font-size: 1.4rem;">🧹 Higiene i Neteja</h3>
-                    <table class="projection-table">
-                        <thead>
-                            <tr><th>Fase de Reducció</th><th>Consum Objectiu</th><th>Reducció Aconseguida</th><th>Pressupost (Amb IPC)</th></tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>Actual (Any 0)</td><td id="clean-y0-cons">0</td><td>-</td><td id="clean-y0-cost">0</td></tr>
-                            <tr><td>Any 1 (-<input type="number" id="clean-pct-y1" value="10" min="0" max="100" class="pct-input" oninput="calcularConsums()">%)</td><td id="clean-y1-cons">0</td><td id="clean-y1-red" style="color:var(--eco-primary);">0</td><td id="clean-y1-cost">0</td></tr>
-                            <tr><td>Any 2 (-<input type="number" id="clean-pct-y2" value="20" min="0" max="100" class="pct-input" oninput="calcularConsums()">%)</td><td id="clean-y2-cons">0</td><td id="clean-y2-red" style="color:var(--eco-primary);">0</td><td id="clean-y2-cost">0</td></tr>
-                            <tr><td>Any 3 (-<input type="number" id="clean-pct-y3" value="30" min="0" max="100" class="pct-input" oninput="calcularConsums()">%)</td><td id="clean-y3-cons">0</td><td id="clean-y3-red" style="color:var(--eco-primary);">0</td><td id="clean-y3-cost">0</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <h2 style="margin-top: 50px; color: var(--eco-dark);">4. Pla d'Acció i Justificació de l'Objectiu (-30%)</h2>
-            <p style="margin-bottom: 20px;">Relació de mesures tècniques valorades econòmicament per assegurar la viabilitat de l'objectiu de reducció del 30% en cadascun dels 4 àmbits clau:</p>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-
-                <div style="background: #fff; border: 1px solid #bae6fd; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                    <h4 style="color: var(--ocean-blue); margin-top: 0; font-size: 1.1rem; border-bottom: 2px solid #e0f2fe; padding-bottom: 10px;">💧 Aigua: Objectiu -240.900 L/any (-30%)</h4>
-                    <ul style="padding-left: 20px; color: var(--text-main); font-size: 0.95rem; line-height: 1.5; margin-bottom: 0;">
-                        <li style="margin-bottom: 15px;">
-                            <strong>Electrovàlvula IoT general:</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Instal·lació de vàlvula de tall de 2" lligada a l'armat de l'alarma (Securitas).</span><br>
-                            <span style="color: var(--eco-primary); font-weight: 600;">➔ Estalvi: 200.750 L/any (Aporta un -25%).</span><br>
-                            <span style="color: #ef4444; font-weight: 600;">➔ Cost Inversió: ~450€. (ROI: 1 any).</span>
-                        </li>
-                        <li>
-                            <strong>Temporitzadors de 6s en 15 lavabos:</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Substitució de polsadors a les plantes baixes (màxim trànsit).</span><br>
-                            <span style="color: var(--eco-primary); font-weight: 600;">➔ Estalvi: 40.150 L/any (Aporta el -5% restant).</span><br>
-                            <span style="color: #ef4444; font-weight: 600;">➔ Cost Inversió: ~350€ (23€/unitat).</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div style="background: #fff; border: 1px solid #fcd34d; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                    <h4 style="color: #b45309; margin-top: 0; font-size: 1.1rem; border-bottom: 2px solid #fef3c7; padding-bottom: 10px;">⚡ Llum: Objectiu -43.200 kWh/any (-30%)</h4>
-                    <ul style="padding-left: 20px; color: var(--text-main); font-size: 0.95rem; line-height: 1.5; margin-bottom: 0;">
-                        <li style="margin-bottom: 15px;">
-                            <strong>Apagada Forçada (Scripts GPO):</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Ordre de <i>shutdown</i> a l'Active Directory a les 21:30h per tallar el consum fantasma de ~400 PCs.</span><br>
-                            <span style="color: var(--eco-primary); font-weight: 600;">➔ Estalvi: 21.600 kWh/any (Aporta un -15%).</span><br>
-                            <span style="color: var(--eco-primary); font-weight: 600;">➔ Cost Inversió: 0€ (Temps d'administració).</span>
-                        </li>
-                        <li>
-                            <strong>Ampliació Planta Solar (+6 kWp):</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Instal·lar 15 plaques extra de 400W i bateries per independitzar la sala de servidors (CPD) de la xarxa.</span><br>
-                            <span style="color: var(--eco-primary); font-weight: 600;">➔ Producció afegida: 21.600 kWh/any (-15% restant).</span><br>
-                            <span style="color: #ef4444; font-weight: 600;">➔ Cost Inversió: ~6.500€. (ROI: ~4,5 anys).</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div style="background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                    <h4 style="color: var(--text-main); margin-top: 0; font-size: 1.1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">📎 Material: Objectiu -1.080 €/any (-30%)</h4>
-                    <ul style="padding-left: 20px; color: var(--text-main); font-size: 0.95rem; line-height: 1.5; margin-bottom: 0;">
-                        <li style="margin-bottom: 15px;">
-                            <strong>Polítiques d'Impressió (PaperCut):</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Límit de 50 còpies/any per usuari. Pas obligatori a exàmens tipus test pel Moodle.</span><br>
-                            <span style="color: var(--eco-primary); font-weight: 600;">➔ Estalvi paper/tòner: 650 €/any (Aporta un -18%).</span><br>
-                            <span style="color: #ef4444; font-weight: 600;">➔ Cost Llicència: ~250€/any.</span>
-                        </li>
-                        <li>
-                            <strong>Retoladors Recarregables (Economia Circular):</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Substituir la compra massiva de Lyreco per recàrregues de tinter a la sala de professors.</span><br>
-                            <span style="color: var(--eco-primary); font-weight: 600;">➔ Estalvi reposició: 430 €/any (Aporta el -12% restant).</span><br>
-                            <span style="color: #ef4444; font-weight: 600;">➔ Cost Inversió: 120€ (estacions de recàrrega).</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <div style="background: #fff; border: 1px solid #a7f3d0; border-radius: 8px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                    <h4 style="color: var(--eco-primary); margin-top: 0; font-size: 1.1rem; border-bottom: 2px solid #d1fae5; padding-bottom: 10px;">🧹 Neteja: Objectiu -2.700 €/any (-30%)</h4>
-                    <ul style="padding-left: 20px; color: var(--text-main); font-size: 0.95rem; line-height: 1.5; margin-bottom: 0;">
-                        <li style="margin-bottom: 15px;">
-                            <strong>Assecadors Elèctrics (Sinergia Solar):</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Eliminar el paper eixugamans i instal·lar 4 assecadors d'aire fred alimentats per les plaques solars.</span><br>
-                            <span style="color: var(--eco-primary); font-weight: 600;">➔ Estalvi paper continu: 1.500 €/any (-17%).</span><br>
-                            <span style="color: #ef4444; font-weight: 600;">➔ Cost Inversió: ~1.800€. (ROI: ~1,2 anys).</span>
-                        </li>
-                        <li>
-                            <strong>Dosificació Industrial Automàtica:</strong><br>
-                            <span style="color: var(--text-muted); font-size: 0.85rem;">Equips mecànics de paret per diluir químics concentrats de garrafa sense sobredosificació humana.</span><br>
-                            <span style="color: var(--eco-primary); font-weight: 600;">➔ Estalvi producte: 1.200 €/any (-13% restant).</span><br>
-                            <span style="color: #ef4444; font-weight: 600;">➔ Cost Inversió: ~250€.</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <div style="background: linear-gradient(135deg, var(--eco-dark), var(--ocean-blue)); color: white; padding: 30px; border-radius: 12px; margin-top: 40px; text-align: center; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);">
-                <h3 style="margin-top: 0; font-size: 1.8rem;">Impacte Global Anual Projectat</h3>
-                <p style="font-size: 1.1rem; margin-bottom: 20px; color: #e0f2fe;">La implementació d'aquestes mesures permetrà el següent retorn ASG:</p>
-                <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px;">
-                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; min-width: 200px;">
-                        <strong style="font-size: 2.5rem; display: block;" id="estalvi-co2">0</strong>
-                        <span style="font-size: 1.2rem; font-weight: 300;">Kg de CO₂ Evitats / any</span>
+            <div class="global-impact" style="background: #10b981; color: white; padding: 25px; border-radius: 8px; text-align: center; margin-bottom: 30px;">
+                <h2 style="color: white; margin-top: 0;">🌍 L'impacte d'aplicar aquestes mesures:</h2>
+                <p>Si aconseguim l'objectiu proposat al 3r any, estalviarem cada any:</p>
+                <div style="display: flex; justify-content: space-around; flex-wrap: wrap; margin-top: 20px;">
+                    <div>
+                        <div style="font-size: 2.5rem; font-weight: bold;" id="estalvi-euros">0 €</div>
+                        <div>Diners estalviats (Any 3)</div>
                     </div>
-                    <div style="background: rgba(255,255,255,0.1); padding: 20px; border-radius: 8px; min-width: 200px;">
-                        <strong style="font-size: 2.5rem; display: block;" id="estalvi-euros">0</strong>
-                        <span style="font-size: 1.2rem; font-weight: 300;">Euros Estalviats (€) / any</span>
+                    <div>
+                        <div style="font-size: 2.5rem; font-weight: bold;" id="estalvi-co2">0 Kg</div>
+                        <div>Emissions de CO2 evitades</div>
                     </div>
                 </div>
             </div>
-        </section>
+
+            <section class="simulator-section card">
+                <h2 class="simulator-title">Pas 2: Juga amb les solucions 🎛️</h2>
+                <p class="simulator-subtitle">Hem configurat els botons perquè sumin un <strong>30% d'estalvi per defecte</strong>. Pots pujar-los o baixar-los segons el que sigui més fàcil d'aplicar al teu institut.</p>
+
+                <div class="simulator-grid">
+
+                    <div class="category-block block-water">
+                        <h3>💧 Què podem fer amb l'Aigua?</h3>
+                        <div class="actions-panel">
+                            <div class="action-item">
+                                <label>🚿 Posar vàlvules intel·ligents per evitar fuites</label>
+                                <div class="slider-ui">
+                                    <span class="slider-min">Gens</span>
+                                    <input type="range" class="friendly-slider slider-water" id="w-act1" min="0" max="20" value="15" oninput="calcularConsums()">
+                                    <span class="slider-max">Màxim</span>
+                                    <span class="slider-badge" id="val-w-act1">15%</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <label>⏱️ Aixetes que es tanquen soles en 6 segons</label>
+                                <div class="slider-ui">
+                                    <span class="slider-min">Gens</span>
+                                    <input type="range" class="friendly-slider slider-water" id="w-act2" min="0" max="15" value="10" oninput="calcularConsums()">
+                                    <span class="slider-max">Màxim</span>
+                                    <span class="slider-badge" id="val-w-act2">10%</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <label>🚽 Cisternes de lavabo amb doble botó</label>
+                                <div class="slider-ui">
+                                    <span class="slider-min">Gens</span>
+                                    <input type="range" class="friendly-slider slider-water" id="w-act3" min="0" max="10" value="5" oninput="calcularConsums()">
+                                    <span class="slider-max">Màxim</span>
+                                    <span class="slider-badge" id="val-w-act3">5%</span>
+                                </div>
+                            </div>
+                            <div class="user-friendly-summary">Objectiu d'estalvi assolit: <strong class="big-percent" id="w-total-pct">30</strong><strong>%</strong></div>
+                        </div>
+                        <details class="tech-details">
+                            <summary>🤓 Veure taula de dades tècniques (Projecció a 3 anys)</summary>
+                            <table class="projection-table">
+                                <thead><tr><th>Fase</th><th>Consum Objectiu</th><th>Reducció</th><th>Pressupost (IPC +3%)</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Actual (Any 0)</td><td id="water-y0-cons">0</td><td>-</td><td id="water-y0-cost">0</td></tr>
+                                    <tr><td>Any 1</td><td id="water-y1-cons">0</td><td id="water-y1-red">0</td><td id="water-y1-cost">0</td></tr>
+                                    <tr><td>Any 2</td><td id="water-y2-cons">0</td><td id="water-y2-red">0</td><td id="water-y2-cost">0</td></tr>
+                                    <tr><td>Any 3 (Objectiu)</td><td id="water-y3-cons">0</td><td id="water-y3-red">0</td><td id="water-y3-cost">0</td></tr>
+                                </tbody>
+                            </table>
+                        </details>
+                    </div>
+
+                    <div class="category-block block-elec">
+                        <h3>⚡ Què podem fer amb la Llum?</h3>
+                        <div class="actions-panel">
+                            <div class="action-item">
+                                <label>🔌 Apagar automàticament els ordinadors a les 21h</label>
+                                <div class="slider-ui">
+                                    <span class="slider-min">Gens</span>
+                                    <input type="range" class="friendly-slider slider-elec" id="e-act1" min="0" max="20" value="10" oninput="calcularConsums()">
+                                    <span class="slider-max">Màxim</span>
+                                    <span class="slider-badge" id="val-e-act1">10%</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <label>💡 Posar sensors de moviment i llums LED</label>
+                                <div class="slider-ui">
+                                    <span class="slider-min">Gens</span>
+                                    <input type="range" class="friendly-slider slider-elec" id="e-act2" min="0" max="20" value="10" oninput="calcularConsums()">
+                                    <span class="slider-max">Màxim</span>
+                                    <span class="slider-badge" id="val-e-act2">10%</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <label>☀️ Instal·lar plaques solars al sostre</label>
+                                <div class="slider-ui">
+                                    <span class="slider-min">Gens</span>
+                                    <input type="range" class="friendly-slider slider-elec" id="e-act3" min="0" max="30" value="10" oninput="calcularConsums()">
+                                    <span class="slider-max">Màxim</span>
+                                    <span class="slider-badge" id="val-e-act3">10%</span>
+                                </div>
+                            </div>
+                            <div class="user-friendly-summary">Objectiu d'estalvi assolit: <strong class="big-percent" id="e-total-pct">30</strong><strong>%</strong></div>
+                        </div>
+                        <details class="tech-details">
+                            <summary>🤓 Veure taula de dades tècniques (Projecció a 3 anys)</summary>
+                            <table class="projection-table">
+                                <thead><tr><th>Fase</th><th>Consum Objectiu</th><th>Reducció</th><th>Pressupost (IPC +3%)</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Actual (Any 0)</td><td id="elec-y0-cons">0</td><td>-</td><td id="elec-y0-cost">0</td></tr>
+                                    <tr><td>Any 1</td><td id="elec-y1-cons">0</td><td id="elec-y1-red">0</td><td id="elec-y1-cost">0</td></tr>
+                                    <tr><td>Any 2</td><td id="elec-y2-cons">0</td><td id="elec-y2-red">0</td><td id="elec-y2-cost">0</td></tr>
+                                    <tr><td>Any 3 (Objectiu)</td><td id="elec-y3-cons">0</td><td id="elec-y3-red">0</td><td id="elec-y3-cost">0</td></tr>
+                                </tbody>
+                            </table>
+                        </details>
+                    </div>
+
+                    <div class="category-block block-sup">
+                        <h3>📎 Què podem fer amb el Material?</h3>
+                        <div class="actions-panel">
+                            <div class="action-item">
+                                <label>💻 Fer exàmens per ordinador (Moodle)</label>
+                                <div class="slider-ui">
+                                    <span class="slider-min">Gens</span>
+                                    <input type="range" class="friendly-slider slider-sup" id="m-act1" min="0" max="25" value="15" oninput="calcularConsums()">
+                                    <span class="slider-max">Màxim</span>
+                                    <span class="slider-badge" id="val-m-act1">15%</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <label>🖨️ Posar un límit de fotocòpies per alumne/professor</label>
+                                <div class="slider-ui">
+                                    <span class="slider-min">Gens</span>
+                                    <input type="range" class="friendly-slider slider-sup" id="m-act2" min="0" max="15" value="10" oninput="calcularConsums()">
+                                    <span class="slider-max">Màxim</span>
+                                    <span class="slider-badge" id="val-m-act2">10%</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <label>🖊️ Comprar retoladors de pissarra recarregables</label>
+                                <div class="slider-ui">
+                                    <span class="slider-min">Gens</span>
+                                    <input type="range" class="friendly-slider slider-sup" id="m-act3" min="0" max="10" value="5" oninput="calcularConsums()">
+                                    <span class="slider-max">Màxim</span>
+                                    <span class="slider-badge" id="val-m-act3">5%</span>
+                                </div>
+                            </div>
+                            <div class="user-friendly-summary">Objectiu d'estalvi assolit: <strong class="big-percent" id="m-total-pct">30</strong><strong>%</strong></div>
+                        </div>
+                        <details class="tech-details">
+                            <summary>🤓 Veure taula de dades tècniques (Projecció a 3 anys)</summary>
+                            <table class="projection-table">
+                                <thead><tr><th>Fase</th><th>Consum Objectiu</th><th>Reducció</th><th>Pressupost (IPC +3%)</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Actual (Any 0)</td><td id="sup-y0-cons">0</td><td>-</td><td id="sup-y0-cost">0</td></tr>
+                                    <tr><td>Any 1</td><td id="sup-y1-cons">0</td><td id="sup-y1-red">0</td><td id="sup-y1-cost">0</td></tr>
+                                    <tr><td>Any 2</td><td id="sup-y2-cons">0</td><td id="sup-y2-red">0</td><td id="sup-y2-cost">0</td></tr>
+                                    <tr><td>Any 3 (Objectiu)</td><td id="sup-y3-cons">0</td><td id="sup-y3-red">0</td><td id="sup-y3-cost">0</td></tr>
+                                </tbody>
+                            </table>
+                        </details>
+                    </div>
+
+                    <div class="category-block block-clean">
+                        <h3>🧹 Què podem fer amb la Neteja?</h3>
+                        <div class="actions-panel">
+                            <div class="action-item">
+                                <label>🌬️ Llevar el paper de mans i posar assecadors d'aire</label>
+                                <div class="slider-ui">
+                                    <span class="slider-min">Gens</span>
+                                    <input type="range" class="friendly-slider slider-clean" id="c-act1" min="0" max="20" value="15" oninput="calcularConsums()">
+                                    <span class="slider-max">Màxim</span>
+                                    <span class="slider-badge" id="val-c-act1">15%</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <label>🧴 Màquines que barregen el sabó soles</label>
+                                <div class="slider-ui">
+                                    <span class="slider-min">Gens</span>
+                                    <input type="range" class="friendly-slider slider-clean" id="c-act2" min="0" max="15" value="10" oninput="calcularConsums()">
+                                    <span class="slider-max">Màxim</span>
+                                    <span class="slider-badge" id="val-c-act2">10%</span>
+                                </div>
+                            </div>
+                            <div class="action-item">
+                                <label>📦 Comprar garrafes grans de sabó a granel</label>
+                                <div class="slider-ui">
+                                    <span class="slider-min">Gens</span>
+                                    <input type="range" class="friendly-slider slider-clean" id="c-act3" min="0" max="10" value="5" oninput="calcularConsums()">
+                                    <span class="slider-max">Màxim</span>
+                                    <span class="slider-badge" id="val-c-act3">5%</span>
+                                </div>
+                            </div>
+                            <div class="user-friendly-summary">Objectiu d'estalvi assolit: <strong class="big-percent" id="c-total-pct">30</strong><strong>%</strong></div>
+                        </div>
+                        <details class="tech-details">
+                            <summary>🤓 Veure taula de dades tècniques (Projecció a 3 anys)</summary>
+                            <table class="projection-table">
+                                <thead><tr><th>Fase</th><th>Consum Objectiu</th><th>Reducció</th><th>Pressupost (IPC +3%)</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Actual (Any 0)</td><td id="clean-y0-cons">0</td><td>-</td><td id="clean-y0-cost">0</td></tr>
+                                    <tr><td>Any 1</td><td id="clean-y1-cons">0</td><td id="clean-y1-red">0</td><td id="clean-y1-cost">0</td></tr>
+                                    <tr><td>Any 2</td><td id="clean-y2-cons">0</td><td id="clean-y2-red">0</td><td id="clean-y2-cost">0</td></tr>
+                                    <tr><td>Any 3 (Objectiu)</td><td id="clean-y3-cons">0</td><td id="clean-y3-red">0</td><td id="clean-y3-cost">0</td></tr>
+                                </tbody>
+                            </table>
+                        </details>
+                    </div>
+                </div>
+            </section>
+        </div>
     </main>
 
     <script src="script.js"></script>

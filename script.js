@@ -33,7 +33,7 @@ function calcularConsums() {
         }
     }
 
-    // --- RENDERITZAT BÀSIC ---
+    // --- RENDERITZAT BÀSIC (Secció 2) ---
     const resultsSection = document.getElementById('results');
     if (resultsSection) resultsSection.style.display = 'block';
 
@@ -47,26 +47,47 @@ function calcularConsums() {
     updateElement('res-sup-year', supYear, '€'); updateElement('res-sup-period', supPeriod, '€');
     updateElement('res-clean-year', cleanYear, '€'); updateElement('res-clean-period', cleanPeriod, '€');
 
-    // --- CÀLCUL A 3 ANYS AMB VARIABLES I IPC DE +3% ANUAL ---
+    // --- CÀLCUL D'ACCIONS (Sliders) ---
+    const calcularSliders = (prefix) => {
+        let act1 = parseFloat(document.getElementById(`${prefix}-act1`).value) || 0;
+        let act2 = parseFloat(document.getElementById(`${prefix}-act2`).value) || 0;
+        let act3 = parseFloat(document.getElementById(`${prefix}-act3`).value) || 0;
+
+        // Actualitzar els labels al costat del slider
+        document.getElementById(`val-${prefix}-act1`).innerText = act1 + '%';
+        document.getElementById(`val-${prefix}-act2`).innerText = act2 + '%';
+        document.getElementById(`val-${prefix}-act3`).innerText = act3 + '%';
+
+        let totalTarget = act1 + act2 + act3;
+        document.getElementById(`${prefix}-total-pct`).innerText = totalTarget;
+
+        return totalTarget;
+    };
+
+    let wPct = calcularSliders('w');
+    let ePct = calcularSliders('e');
+    let mPct = calcularSliders('m');
+    let cPct = calcularSliders('c');
+
+    // --- CÀLCUL TAULES 3 ANYS (IPC +3%) ---
     const costKWh = 0.25;
     const costLitre = 0.002;
-    const ipcAnual = 1.03; // Increment del 3% cada any
+    const ipcAnual = 1.03;
 
-    const omplirTaulaProjeccio = (prefix, volumBase, preuUnitat) => {
+    const omplirTaulaProjeccio = (prefix, volumBase, preuUnitat, targetPct) => {
         let costFinalAny3 = 0;
         let unitat = (prefix === 'elec') ? 'kWh' : (prefix === 'water') ? 'L' : '€';
 
-        // Any 0 (Sense reducció i sense inflació)
+        // Any 0 (Base)
         updateElement(`${prefix}-y0-cons`, volumBase, unitat);
         updateElement(`${prefix}-y0-cost`, volumBase * preuUnitat, '€');
 
+        // Distribuïm l'objectiu en 3 anys (1/3 per any)
         for (let any = 1; any <= 3; any++) {
-            // Llegeix el percentatge indicat per l'usuari a l'HTML
-            let inputCamp = document.getElementById(`${prefix}-pct-y${any}`);
-            let percentatge = inputCamp ? (parseFloat(inputCamp.value) || 0) : 0;
+            let percentatgeAny = (targetPct / 3) * any;
 
-            let factorReduccio = 1 - (percentatge / 100);
-            let factorIpc = Math.pow(ipcAnual, any); // Interès compost de l'IPC (Ex: 1.03^2 = 1.0609)
+            let factorReduccio = 1 - (percentatgeAny / 100);
+            let factorIpc = Math.pow(ipcAnual, any);
 
             let volumObjectiu = volumBase * factorReduccio;
             let reduccioAssolida = volumBase - volumObjectiu;
@@ -81,19 +102,19 @@ function calcularConsums() {
         return costFinalAny3;
     };
 
-    let costRealY3Elec = omplirTaulaProjeccio('elec', elecYear, costKWh);
-    let costRealY3Water = omplirTaulaProjeccio('water', waterYear, costLitre);
-    let costRealY3Sup = omplirTaulaProjeccio('sup', supYear, 1);
-    let costRealY3Clean = omplirTaulaProjeccio('clean', cleanYear, 1);
+    let costRealY3Elec = omplirTaulaProjeccio('elec', elecYear, costKWh, ePct);
+    let costRealY3Water = omplirTaulaProjeccio('water', waterYear, costLitre, wPct);
+    let costRealY3Sup = omplirTaulaProjeccio('sup', supYear, 1, mPct);
+    let costRealY3Clean = omplirTaulaProjeccio('clean', cleanYear, 1, cPct);
 
-    // --- IMPACTE GLOBAL (Manté la suma de l'Any 3 com a referència) ---
+    // --- IMPACTE GLOBAL (Estalvi real Any 3 vs Inèrcia IPC) ---
     let pressupostBaseTotal = (elecYear * costKWh) + (waterYear * costLitre) + supYear + cleanYear;
     let pressupostInercialAny3 = pressupostBaseTotal * Math.pow(ipcAnual, 3);
     let pressupostAssolitAny3 = costRealY3Elec + costRealY3Water + costRealY3Sup + costRealY3Clean;
 
     let eurosEstalviatsReals = pressupostInercialAny3 - pressupostAssolitAny3;
-    let co2Estalviat = (elecYear * 0.30) * 0.25;
+    let co2Estalviat = (elecYear * (ePct/100)) * 0.25; // CO2 calculat només de l'estalvi elèctric assolit
 
     updateElement('estalvi-euros', eurosEstalviatsReals, '€');
-    updateElement('estalvi-co2', co2Estalviat, 'Kg');
+    updateElement('estalvi-co2', co2Estalviat, 'Kg CO2');
 }
