@@ -1,120 +1,79 @@
-function calcularConsums() {
-    if (!document.getElementById('elec-base')) return;
-
+ function calcularConsums() {
     let elecBase = parseFloat(document.getElementById('elec-base').value) || 0;
     let waterBase = parseFloat(document.getElementById('water-base').value) || 0;
     let supBase = parseFloat(document.getElementById('supplies-base').value) || 0;
     let cleanBase = parseFloat(document.getElementById('cleaning-base').value) || 0;
 
-    let elecYear = 0, elecPeriod = 0;
-    let waterYear = 0, waterPeriod = 0;
-    let supYear = 0, supPeriod = 0;
-    let cleanYear = 0, cleanPeriod = 0;
+    document.getElementById('base-e-esc').innerText = Math.round(elecBase * 10).toLocaleString();
+    document.getElementById('base-e-nat').innerText = Math.round(elecBase * 12).toLocaleString();
+    document.getElementById('base-w-esc').innerText = Math.round(waterBase * 10).toLocaleString();
+    document.getElementById('base-w-nat').innerText = Math.round(waterBase * 12).toLocaleString();
+    document.getElementById('base-m-esc').innerText = Math.round(supBase * 10).toLocaleString();
+    document.getElementById('base-m-nat').innerText = Math.round(supBase * 12).toLocaleString();
+    document.getElementById('base-c-esc').innerText = Math.round(cleanBase * 10).toLocaleString();
+    document.getElementById('base-c-nat').innerText = Math.round(cleanBase * 12).toLocaleString();
 
-    // 1. Càlcul normalitzat (Estacionalitat)
-    for (let month = 1; month <= 12; month++) {
-        let elecFactor = 1.0, waterFactor = 1.0, supFactor = 1.0, cleanFactor = 1.0;
-
-        if (month === 8) { elecFactor = 0.15; waterFactor = 0.10; supFactor = 0.0; cleanFactor = 0.10; }
-        else if (month === 7) { elecFactor = 0.8; waterFactor = 0.9; supFactor = 0.2; cleanFactor = 0.8; }
-        else if (month === 12 || month === 1 || month === 2) { elecFactor = 1.3; }
-        else if (month === 9) { supFactor = 2.0; cleanFactor = 1.2; }
-
-        elecYear += elecBase * elecFactor;
-        waterYear += waterBase * waterFactor;
-        supYear += supBase * supFactor;
-        cleanYear += cleanBase * cleanFactor;
-
-        if (month !== 7 && month !== 8) {
-            elecPeriod += elecBase * elecFactor;
-            waterPeriod += waterBase * waterFactor;
-            supPeriod += supBase * supFactor;
-            cleanPeriod += cleanBase * cleanFactor;
-        }
-    }
-
-    // --- RENDERITZAT BÀSIC (Secció 2) ---
-    const resultsSection = document.getElementById('results');
-    if (resultsSection) resultsSection.style.display = 'block';
-
-    const updateElement = (id, value, suffix) => {
-        const el = document.getElementById(id);
-        if (el) el.innerText = Math.round(value).toLocaleString() + (suffix ? ' ' + suffix : '');
-    };
-
-    updateElement('res-elec-year', elecYear, 'kWh'); updateElement('res-elec-period', elecPeriod, 'kWh');
-    updateElement('res-water-year', waterYear, 'L'); updateElement('res-water-period', waterPeriod, 'L');
-    updateElement('res-sup-year', supYear, '€'); updateElement('res-sup-period', supPeriod, '€');
-    updateElement('res-clean-year', cleanYear, '€'); updateElement('res-clean-period', cleanPeriod, '€');
-
-    // --- CÀLCUL D'ACCIONS (Sliders) ---
-    const calcularSliders = (prefix) => {
-        let act1 = parseFloat(document.getElementById(`${prefix}-act1`).value) || 0;
-        let act2 = parseFloat(document.getElementById(`${prefix}-act2`).value) || 0;
-        let act3 = parseFloat(document.getElementById(`${prefix}-act3`).value) || 0;
-
-        // Actualitzar els labels al costat del slider
-        document.getElementById(`val-${prefix}-act1`).innerText = act1 + '%';
-        document.getElementById(`val-${prefix}-act2`).innerText = act2 + '%';
-        document.getElementById(`val-${prefix}-act3`).innerText = act3 + '%';
-
-        let totalTarget = act1 + act2 + act3;
-        document.getElementById(`${prefix}-total-pct`).innerText = totalTarget;
-
-        return totalTarget;
-    };
-
-    let wPct = calcularSliders('w');
-    let ePct = calcularSliders('e');
-    let mPct = calcularSliders('m');
-    let cPct = calcularSliders('c');
-
-    // --- CÀLCUL TAULES 3 ANYS (IPC +3%) ---
     const costKWh = 0.25;
     const costLitre = 0.002;
     const ipcAnual = 1.03;
 
-    const omplirTaulaProjeccio = (prefix, volumBase, preuUnitat, targetPct) => {
-        let costFinalAny3 = 0;
-        let unitat = (prefix === 'elec') ? 'kWh' : (prefix === 'water') ? 'L' : '€';
-
-        // Any 0 (Base)
-        updateElement(`${prefix}-y0-cons`, volumBase, unitat);
-        updateElement(`${prefix}-y0-cost`, volumBase * preuUnitat, '€');
-
-        // Distribuïm l'objectiu en 3 anys (1/3 per any)
-        for (let any = 1; any <= 3; any++) {
-            let percentatgeAny = (targetPct / 3) * any;
-
-            let factorReduccio = 1 - (percentatgeAny / 100);
-            let factorIpc = Math.pow(ipcAnual, any);
-
-            let volumObjectiu = volumBase * factorReduccio;
-            let reduccioAssolida = volumBase - volumObjectiu;
-            let pressupostProjectat = volumObjectiu * preuUnitat * factorIpc;
-
-            updateElement(`${prefix}-y${any}-cons`, volumObjectiu, unitat);
-            updateElement(`${prefix}-y${any}-cost`, pressupostProjectat, '€');
-            updateElement(`${prefix}-y${any}-red`, reduccioAssolida, unitat);
-
-            if (any === 3) costFinalAny3 = pressupostProjectat;
-        }
-        return costFinalAny3;
+    const weights = {
+        w: [12, 6, 5, 4, 3], e: [10, 7, 5, 5, 3],
+        m: [10, 8, 5, 4, 3], c: [10, 8, 5, 4, 3]
     };
 
-    let costRealY3Elec = omplirTaulaProjeccio('elec', elecYear, costKWh, ePct);
-    let costRealY3Water = omplirTaulaProjeccio('water', waterYear, costLitre, wPct);
-    let costRealY3Sup = omplirTaulaProjeccio('sup', supYear, 1, mPct);
-    let costRealY3Clean = omplirTaulaProjeccio('clean', cleanYear, 1, cPct);
+    const getPct = (prefix) => {
+        let totalPct = 0;
+        for(let i=1; i<=5; i++) {
+            let slider = document.getElementById(`${prefix}-act${i}`);
+            let val = parseFloat(slider.value) || 0;
+            document.getElementById(`val-${prefix}-act${i}`).innerText = val + '%';
+            slider.style.background = `linear-gradient(90deg, #10b981 ${val}%, #cbd5e1 ${val}%)`;
+            totalPct += (val / 100) * weights[prefix][i-1];
+        }
+        document.getElementById(`${prefix}-total-pct`).innerText = totalPct.toFixed(1);
+        return totalPct;
+    };
 
-    // --- IMPACTE GLOBAL (Estalvi real Any 3 vs Inèrcia IPC) ---
-    let pressupostBaseTotal = (elecYear * costKWh) + (waterYear * costLitre) + supYear + cleanYear;
-    let pressupostInercialAny3 = pressupostBaseTotal * Math.pow(ipcAnual, 3);
-    let pressupostAssolitAny3 = costRealY3Elec + costRealY3Water + costRealY3Sup + costRealY3Clean;
+    let wPct = getPct('w'), ePct = getPct('e'), mPct = getPct('m'), cPct = getPct('c');
 
-    let eurosEstalviatsReals = pressupostInercialAny3 - pressupostAssolitAny3;
-    let co2Estalviat = (elecYear * (ePct/100)) * 0.25; // CO2 calculat només de l'estalvi elèctric assolit
+    const omplirTaula = (idPrefix, unitatsAnuals, preu, pctEstalvi, tipus) => {
+        let costY3 = 0;
+        for(let i = 0; i <= 3; i++) {
+            let red = (pctEstalvi / 3) * i;
+            let finalVol = unitatsAnuals * (1 - red / 100);
+            let finalCost = (tipus === 'consum' ? finalVol * preu : unitatsAnuals * (1 - red / 100)) * Math.pow(ipcAnual, i);
 
-    updateElement('estalvi-euros', eurosEstalviatsReals, '€');
-    updateElement('estalvi-co2', co2Estalviat, 'Kg CO2');
+            document.getElementById(idPrefix+'-y'+i+'-cost').innerText = Math.round(finalCost).toLocaleString() + ' €';
+            if(i > 0) {
+                let textRed = tipus === 'consum' ? Math.round(unitatsAnuals - finalVol).toLocaleString() + (idPrefix.includes('water') ? ' L' : ' kWh') : Math.round((unitatsAnuals * Math.pow(ipcAnual, i)) - finalCost).toLocaleString() + ' €';
+                document.getElementById(idPrefix+'-y'+i+'-red').innerText = textRed;
+            }
+            if(i === 3) costY3 = finalCost;
+        }
+        return costY3;
+    };
+
+    let cY3Elec = omplirTaula('elec', elecBase*12, costKWh, ePct, 'consum');
+    let cY3Water = omplirTaula('water', waterBase*12, costLitre, wPct, 'consum');
+    let cY3Sup = omplirTaula('sup', supBase*12, 1, mPct, 'diners');
+    let cY3Clean = omplirTaula('clean', cleanBase*12, 1, cPct, 'diners');
+
+    let inercia = (elecBase*12*costKWh + waterBase*12*costLitre + supBase*12 + cleanBase*12) * Math.pow(ipcAnual, 3);
+    let totalProjecte = cY3Elec + cY3Water + cY3Sup + cY3Clean;
+
+    document.getElementById('estalvi-euros').innerText = Math.round(inercia - totalProjecte).toLocaleString() + ' €';
+    document.getElementById('estalvi-co2').innerText = Math.round((elecBase*12 * (ePct/100)) * 0.25).toLocaleString() + ' Kg';
+
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('btn-pdf').style.display = 'flex';
+}
+
+function generarPDF() {
+    // Obrim totes les explicacions automàticament just abans d'imprimir
+    document.querySelectorAll('details').forEach(d => d.open = true);
+
+    setTimeout(() => {
+        window.print();
+    }, 300);
 }
