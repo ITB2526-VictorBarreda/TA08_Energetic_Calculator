@@ -1,250 +1,247 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora d'Eficiència - Institut</title>
+    <title>Efficiency Calculator - High School</title>
     <link rel="stylesheet" href="calculadora.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body onload="calcularConsums()">
-
-    <button class="btn-pdf-fixed" onclick="generarPDF()" id="btn-pdf" style="display: none;">
-        <span>📄</span> DESCARREGAR PDF
-    </button>
+<body>
 
     <header class="header">
-        <h1>🌱 Calculadora d'Eficiència Energètica</h1>
-        <p>Projecte cap a un institut més sostenible (Objectiu: 30% d'estalvi)</p>
+        <h1>🌱 Energy Efficiency Calculator</h1>
+        <p>Project towards a more sustainable high school (Goal: 30% savings)</p>
     </header>
 
     <main class="container">
 
-        <div class="instructions-box">
-            <h3>👋 Com funciona aquesta eina?</h3>
-            <ol>
-                <li>Les <strong>dades base</strong> ja estan calculades amb el diagnòstic actual de l'institut. Modifica-les només si cal.</li>
-                <li>Ajusta el <strong>nivell d'implementació (0% a 100%)</strong> de cada mesura en el pas 2.</li>
-                <li>Observa l'estalvi assolit i descarrega l'informe en PDF.</li>
-            </ol>
+        <div class="base-summary-box static-box">
+            <h3>📊 Initial School Diagnostics (Real Bills)</h3>
+            <p style="font-size: 0.9rem; color: #64748b; margin-top: -10px; margin-bottom: 15px;">This is the initial snapshot of the center. It will not change even if you run simulations below.</p>
+            <div class="base-summary-grid">
+                <div class="summary-item"><h4>⚡ Electricity</h4><p>School Year: 120,000 kWh</p><p>Calendar Year: 144,000 kWh</p></div>
+                <div class="summary-item"><h4>💧 Water</h4><p>School Year: 720,000 L</p><p>Calendar Year: 864,000 L</p></div>
+                <div class="summary-item"><h4>📎 Supplies</h4><p>School Year: 3,000 €</p><p>Calendar Year: 3,600 €</p></div>
+                <div class="summary-item"><h4>🧹 Cleaning</h4><p>School Year: 7,500 €</p><p>Calendar Year: 9,000 €</p></div>
+            </div>
         </div>
 
-        <section class="card form-section">
-            <h2>Pas 1: Dades base de l'institut (2025) 📄</h2>
+        <div class="filter-container">
+            <h3>📊 What data do you want to see on the chart?</h3>
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filtrarGrafic('tots', this)">🌍 All</button>
+                <button class="filter-btn" onclick="filtrarGrafic('llum', this)">⚡ Electricity</button>
+                <button class="filter-btn" onclick="filtrarGrafic('aigua', this)">💧 Water</button>
+                <button class="filter-btn" onclick="filtrarGrafic('mat', this)">📦 Supplies</button>
+                <button class="filter-btn" onclick="filtrarGrafic('net', this)">🧹 Cleaning</button>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="graficConsum"></canvas>
+        </div>
+
+        <section class="simulator-section" style="margin-top: 30px;">
+            <h2 class="simulator-title">🛠️ Detailed Action Plan</h2>
+
+            <div class="simulator-flex-row">
+                <div class="measure-card">
+                    <h3 class="card-header">💧 Water Sector</h3>
+                    <div class="action-list">
+                        <div class="action-item"><div class="action-title"><span>Leak repair <br><small class="reduction-info">(If you apply 100%, you will reduce by 12%)</small></span> <span id="val-w-act1">0%</span></div><input type="range" class="styled-slider" id="w-act1" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Timed faucets <br><small class="reduction-info">(If you apply 100%, you will reduce by 6%)</small></span> <span id="val-w-act2">0%</span></div><input type="range" class="styled-slider" id="w-act2" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Dual flush <br><small class="reduction-info">(If you apply 100%, you will reduce by 5%)</small></span> <span id="val-w-act3">0%</span></div><input type="range" class="styled-slider" id="w-act3" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Rainwater use <br><small class="reduction-info">(If you apply 100%, you will reduce by 4%)</small></span> <span id="val-w-act4">0%</span></div><input type="range" class="styled-slider" id="w-act4" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Awareness <br><small class="reduction-info">(If you apply 100%, you will reduce by 3%)</small></span> <span id="val-w-act5">0%</span></div><input type="range" class="styled-slider" id="w-act5" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                    </div>
+                    <div class="summary-box">Expected savings: <strong class="highlight-text"><span id="w-total-pct">0.0</span>%</strong></div>
+
+                    <div class="unified-table-container">
+                        <table class="projection-table">
+                            <thead>
+                                <tr><th>Year</th><th>Reduction</th><th>Final Cost</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="row-data"><td>2025</td><td>-</td><td id="water-y0-cost">0</td></tr>
+                                <tr class="row-data"><td>2026</td><td id="water-y1-red">0</td><td id="water-y1-cost">0</td></tr>
+                                <tr class="row-data"><td>2027</td><td id="water-y2-red">0</td><td id="water-y2-cost">0</td></tr>
+                                <tr class="row-data"><td>2028</td><td id="water-y3-red">0</td><td id="water-y3-cost">0</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <details class="proposal-detail">
+                        <summary>📖 Details of the measures</summary>
+                        <ul>
+                            <li><strong>1. Leak repair:</strong> Quarterly inspection and preventive maintenance of cisterns and faucets.</li>
+                            <li><strong>2. Timed faucets:</strong> Replacement of manual faucets with automatic shut-off push buttons (10-15 seconds).</li>
+                            <li><strong>3. Dual flush:</strong> Installation of double push button mechanisms (3L/6L) in toilets.</li>
+                            <li><strong>4. Rainwater use:</strong> Collection of rainwater from the gym roof for watering the school garden and cleaning courtyards.</li>
+                            <li><strong>5. Awareness:</strong> Visual campaigns and talks from the high school sustainability committee.</li>
+                        </ul>
+                    </details>
+                </div>
+
+                <div class="measure-card">
+                    <h3 class="card-header">⚡ Electricity Sector</h3>
+                    <div class="action-list">
+                        <div class="action-item"><div class="action-title"><span>Deep sleep <br><small class="reduction-info">(If you apply 100%, you will reduce by 10%)</small></span> <span id="val-e-act1">0%</span></div><input type="range" class="styled-slider" id="e-act1" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Switch to LED <br><small class="reduction-info">(If you apply 100%, you will reduce by 7%)</small></span> <span id="val-e-act2">0%</span></div><input type="range" class="styled-slider" id="e-act2" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Solar Panels <br><small class="reduction-info">(If you apply 100%, you will reduce by 5%)</small></span> <span id="val-e-act3">0%</span></div><input type="range" class="styled-slider" id="e-act3" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Motion sensors <br><small class="reduction-info">(If you apply 100%, you will reduce by 5%)</small></span> <span id="val-e-act4">0%</span></div><input type="range" class="styled-slider" id="e-act4" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Climate Adj. <br><small class="reduction-info">(If you apply 100%, you will reduce by 3%)</small></span> <span id="val-e-act5">0%</span></div><input type="range" class="styled-slider" id="e-act5" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                    </div>
+                    <div class="summary-box">Expected savings: <strong class="highlight-text"><span id="e-total-pct">0.0</span>%</strong></div>
+
+                    <div class="unified-table-container">
+                        <table class="projection-table">
+                            <thead>
+                                <tr><th>Year</th><th>Reduction</th><th>Final Cost</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="row-data"><td>2025</td><td>-</td><td id="elec-y0-cost">0</td></tr>
+                                <tr class="row-data"><td>2026</td><td id="elec-y1-red">0</td><td id="elec-y1-cost">0</td></tr>
+                                <tr class="row-data"><td>2027</td><td id="elec-y2-red">0</td><td id="elec-y2-cost">0</td></tr>
+                                <tr class="row-data"><td>2028</td><td id="elec-y3-red">0</td><td id="elec-y3-cost">0</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <details class="proposal-detail">
+                        <summary>📖 Details of the measures</summary>
+                        <ul>
+                            <li><strong>1. Deep sleep:</strong> Protocol so that all computers and smartboards are disconnected outside school hours to eliminate phantom consumption.</li>
+                            <li><strong>2. Switch to LED:</strong> Progressive replacement of classic fluorescent tubes in classrooms with LED panels.</li>
+                            <li><strong>3. Solar Panels:</strong> Utilization of self-consumption panels to cover the base demand of servers and fridges.</li>
+                            <li><strong>4. Motion sensors:</strong> Installation of detectors in hallways and restrooms so the lights turn off automatically.</li>
+                            <li><strong>5. Climate Adjustment:</strong> Set thermostats to 20°C in winter and 26°C in summer (if applicable).</li>
+                        </ul>
+                    </details>
+                </div>
+
+                <div class="measure-card">
+                    <h3 class="card-header">📎 Office Supplies</h3>
+                    <div class="action-list">
+                        <div class="action-item"><div class="action-title"><span>Digitization <br><small class="reduction-info">(If you apply 100%, you will reduce by 10%)</small></span> <span id="val-m-act1">0%</span></div><input type="range" class="styled-slider" id="m-act1" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Copy restriction <br><small class="reduction-info">(If you apply 100%, you will reduce by 8%)</small></span> <span id="val-m-act2">0%</span></div><input type="range" class="styled-slider" id="m-act2" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Refillable markers <br><small class="reduction-info">(If you apply 100%, you will reduce by 5%)</small></span> <span id="val-m-act3">0%</span></div><input type="range" class="styled-slider" id="m-act3" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Paper reuse <br><small class="reduction-info">(If you apply 100%, you will reduce by 4%)</small></span> <span id="val-m-act4">0%</span></div><input type="range" class="styled-slider" id="m-act4" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Joint purchases <br><small class="reduction-info">(If you apply 100%, you will reduce by 3%)</small></span> <span id="val-m-act5">0%</span></div><input type="range" class="styled-slider" id="m-act5" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                    </div>
+                    <div class="summary-box">Expected savings: <strong class="highlight-text"><span id="m-total-pct">0.0</span>%</strong></div>
+
+                    <div class="unified-table-container">
+                        <table class="projection-table">
+                            <thead>
+                                <tr><th>Year</th><th>Saved</th><th>Final Cost</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="row-data"><td>2025</td><td>-</td><td id="sup-y0-cost">0</td></tr>
+                                <tr class="row-data"><td>2026</td><td id="sup-y1-red">0</td><td id="sup-y1-cost">0</td></tr>
+                                <tr class="row-data"><td>2027</td><td id="sup-y2-red">0</td><td id="sup-y2-cost">0</td></tr>
+                                <tr class="row-data"><td>2028</td><td id="sup-y3-red">0</td><td id="sup-y3-cost">0</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <details class="proposal-detail">
+                        <summary>📖 Details of the measures</summary>
+                        <ul>
+                            <li><strong>1. Digitization:</strong> Eliminating paper for circulars, using digital platforms (iEduca, Classroom).</li>
+                            <li><strong>2. Copy restriction:</strong> Assignment of photocopy quotas per department and teachers using a PIN code.</li>
+                            <li><strong>3. Refillable markers:</strong> Replacing single-use markers with ink refill systems.</li>
+                            <li><strong>4. Paper reuse:</strong> Creation of "scrap paper" trays in all classrooms for drafts.</li>
+                            <li><strong>5. Joint purchases:</strong> Centralizing purchases to order large formats and reduce unnecessary packaging.</li>
+                        </ul>
+                    </details>
+                </div>
+
+                <div class="measure-card">
+                    <h3 class="card-header">🧹 Cleaning & Hygiene</h3>
+                    <div class="action-list">
+                        <div class="action-item"><div class="action-title"><span>Electric dryers <br><small class="reduction-info">(If you apply 100%, you will reduce by 10%)</small></span> <span id="val-c-act1">0%</span></div><input type="range" class="styled-slider" id="c-act1" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Dispensers <br><small class="reduction-info">(If you apply 100%, you will reduce by 8%)</small></span> <span id="val-c-act2">0%</span></div><input type="range" class="styled-slider" id="c-act2" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Bulk buying <br><small class="reduction-info">(If you apply 100%, you will reduce by 5%)</small></span> <span id="val-c-act3">0%</span></div><input type="range" class="styled-slider" id="c-act3" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Reusable tools <br><small class="reduction-info">(If you apply 100%, you will reduce by 4%)</small></span> <span id="val-c-act4">0%</span></div><input type="range" class="styled-slider" id="c-act4" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                        <div class="action-item"><div class="action-title"><span>Stock control <br><small class="reduction-info">(If you apply 100%, you will reduce by 3%)</small></span> <span id="val-c-act5">0%</span></div><input type="range" class="styled-slider" id="c-act5" min="0" max="100" value="0" oninput="calcularConsums()"></div>
+                    </div>
+                    <div class="summary-box">Expected savings: <strong class="highlight-text"><span id="c-total-pct">0.0</span>%</strong></div>
+
+                    <div class="unified-table-container">
+                        <table class="projection-table">
+                            <thead>
+                                <tr><th>Year</th><th>Saved</th><th>Final Cost</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr class="row-data"><td>2025</td><td>-</td><td id="clean-y0-cost">0</td></tr>
+                                <tr class="row-data"><td>2026</td><td id="clean-y1-red">0</td><td id="clean-y1-cost">0</td></tr>
+                                <tr class="row-data"><td>2027</td><td id="clean-y2-red">0</td><td id="clean-y2-cost">0</td></tr>
+                                <tr class="row-data"><td>2028</td><td id="clean-y3-red">0</td><td id="clean-y3-cost">0</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <details class="proposal-detail">
+                        <summary>📖 Details of the measures</summary>
+                        <ul>
+                            <li><strong>1. Electric hand dryers:</strong> Replacement of paper towels with high-efficiency electric hand dryers.</li>
+                            <li><strong>2. Automatic dispensers:</strong> Use of automatic foam soap dispensers to prevent waste.</li>
+                            <li><strong>3. Bulk buying:</strong> Cleaning products in concentrated 20-liter jugs, reducing plastic.</li>
+                            <li><strong>4. Reusable tools:</strong> Transition towards washable microfiber cloths instead of single-use paper.</li>
+                            <li><strong>5. Centralized stock control:</strong> Warehouse management to prevent cleaning products from expiring.</li>
+                        </ul>
+                    </details>
+                </div>
+            </div>
+        </section>
+
+        <section class="card form-section" style="margin-top: 40px; border: 2px solid var(--border-color);">
+            <h2>⚙️ Modify Base Data to run simulations</h2>
+            <p style="font-size: 0.9rem; color: #64748b; margin-top: -10px; margin-bottom: 20px;">Enter new values to see how they affect the chart and the action plan above.</p>
             <div class="input-grid">
                 <div class="input-group">
-                    <label>⚡ Electricitat (kWh/mes):</label>
+                    <label>⚡ Electricity (kWh/month):</label>
                     <input type="number" id="elec-base" value="12000" min="0" step="any" onkeydown="if(['e','E','+','-'].includes(event.key)) event.preventDefault();" oninput="validarInput(this); marcarCanvis()">
                 </div>
                 <div class="input-group">
-                    <label>💧 Aigua (Litres/mes):</label>
+                    <label>💧 Water (Liters/month):</label>
                     <input type="number" id="water-base" value="72000" min="0" step="any" onkeydown="if(['e','E','+','-'].includes(event.key)) event.preventDefault();" oninput="validarInput(this); marcarCanvis()">
                 </div>
                 <div class="input-group">
-                    <label>📎 Material Oficina (€/mes):</label>
+                    <label>📎 Office Supplies (€/month):</label>
                     <input type="number" id="supplies-base" value="300" min="0" step="any" onkeydown="if(['e','E','+','-'].includes(event.key)) event.preventDefault();" oninput="validarInput(this); marcarCanvis()">
                 </div>
                 <div class="input-group">
-                    <label>🧹 Neteja i Higiene (€/mes):</label>
+                    <label>🧹 Cleaning & Hygiene (€/month):</label>
                     <input type="number" id="cleaning-base" value="750" min="0" step="any" onkeydown="if(['e','E','+','-'].includes(event.key)) event.preventDefault();" oninput="validarInput(this); marcarCanvis()">
                 </div>
             </div>
 
             <div class="base-buttons-container">
-                <button class="btn-calculate" id="btn-calc-base" onclick="calcularConsums()">🪄 DADES BASE CARREGADES</button>
-                <button class="btn-reset" id="btn-reset-base" onclick="restaurarDadesBase()">🔄 RESTAURAR DIAGNÒSTIC</button>
+                <button class="btn-calculate" id="btn-calc-base" onclick="calcularConsums()">🪄 CALCULATE NEW IMPACT</button>
+                <button class="btn-reset" id="btn-reset-base" onclick="restaurarDadesBase()">🔄 RESTORE DIAGNOSTICS</button>
+            </div>
+
+            <div class="base-summary-box" style="margin-top: 30px; border: 1px solid var(--eco-primary); margin-bottom: 0;">
+                <h3 style="color: var(--eco-dark);">🔄 Current Base Data (Applied to calculation)</h3>
+                <div class="base-summary-grid">
+                    <div class="summary-item"><h4>⚡ Electricity</h4><p>School Year: <span id="base-e-esc">0</span> kWh</p><p>Calendar Year: <span id="base-e-nat">0</span> kWh</p></div>
+                    <div class="summary-item"><h4>💧 Water</h4><p>School Year: <span id="base-w-esc">0</span> L</p><p>Calendar Year: <span id="base-w-nat">0</span> L</p></div>
+                    <div class="summary-item"><h4>📎 Supplies</h4><p>School Year: <span id="base-m-esc">0</span> €</p><p>Calendar Year: <span id="base-m-nat">0</span> €</p></div>
+                    <div class="summary-item"><h4>🧹 Cleaning</h4><p>School Year: <span id="base-c-esc">0</span> €</p><p>Calendar Year: <span id="base-c-nat">0</span> €</p></div>
+                </div>
             </div>
         </section>
 
-        <div id="results" class="results-section">
-
-            <div class="base-summary-box">
-                <h3>📊 Consum Base Anual (Inici del projecte)</h3>
-                <div class="base-summary-grid">
-                    <div class="summary-item"><h4>⚡ Electricitat</h4><p>Any Escolar: <span id="base-e-esc">0</span> kWh</p><p>Any Natural: <span id="base-e-nat">0</span> kWh</p></div>
-                    <div class="summary-item"><h4>💧 Aigua</h4><p>Any Escolar: <span id="base-w-esc">0</span> L</p><p>Any Natural: <span id="base-w-nat">0</span> L</p></div>
-                    <div class="summary-item"><h4>📎 Material</h4><p>Any Escolar: <span id="base-m-esc">0</span> €</p><p>Any Natural: <span id="base-m-nat">0</span> €</p></div>
-                    <div class="summary-item"><h4>🧹 Neteja</h4><p>Any Escolar: <span id="base-c-esc">0</span> €</p><p>Any Natural: <span id="base-c-nat">0</span> €</p></div>
-                </div>
+        <div class="global-impact" style="margin-top: 40px;">
+            <h2>🌍 Global impact of the measures (2028 Projection):</h2>
+            <div class="impact-metrics">
+                <div><div class="impact-value" id="estalvi-euros">0 €</div><div>Annual economic savings</div></div>
+                <div><div class="impact-value" id="estalvi-co2">0 Kg</div><div>CO2 avoided annually</div></div>
             </div>
-
-            <div class="global-impact">
-                <h2>🌍 Impacte global de les mesures (Projecció 2028):</h2>
-                <div class="impact-metrics">
-                    <div><div class="impact-value" id="estalvi-euros">0 €</div><div>Estalvi econòmic anual</div></div>
-                    <div><div class="impact-value" id="estalvi-co2">0 Kg</div><div>CO2 evitat anualment</div></div>
-                </div>
-            </div>
-
-            <div class="filter-container">
-                <h3>📊 Quines dades vols veure al gràfic?</h3>
-                <div class="filter-buttons">
-                    <button class="filter-btn active" onclick="filtrarGrafic('tots', this)">🌍 Totes</button>
-                    <button class="filter-btn" onclick="filtrarGrafic('llum', this)">⚡ Electricitat</button>
-                    <button class="filter-btn" onclick="filtrarGrafic('aigua', this)">💧 Aigua</button>
-                    <button class="filter-btn" onclick="filtrarGrafic('mat', this)">📦 Material</button>
-                    <button class="filter-btn" onclick="filtrarGrafic('net', this)">🧹 Neteja</button>
-                </div>
-            </div>
-
-            <div class="chart-container">
-                <canvas id="graficConsum"></canvas>
-            </div>
-
-            <section class="simulator-section">
-                <h2 class="simulator-title">Pas 2: Pla d'Acció Detallat 🎛️</h2>
-
-                <div class="simulator-flex-row">
-                    <div class="measure-card">
-                        <h3 class="card-header">💧 Sector Aigua</h3>
-                        <div class="action-list">
-                            <div class="action-item"><div class="action-title"><span>Reparació fuites <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 12%)</small></span> <span id="val-w-act1">0%</span></div><input type="range" class="styled-slider" id="w-act1" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Aixetes temp. <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 6%)</small></span> <span id="val-w-act2">0%</span></div><input type="range" class="styled-slider" id="w-act2" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Doble descàrrega <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 5%)</small></span> <span id="val-w-act3">0%</span></div><input type="range" class="styled-slider" id="w-act3" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Ús pluvials <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 4%)</small></span> <span id="val-w-act4">0%</span></div><input type="range" class="styled-slider" id="w-act4" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Conscienciació <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 3%)</small></span> <span id="val-w-act5">0%</span></div><input type="range" class="styled-slider" id="w-act5" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                        </div>
-                        <div class="summary-box">Estalvi previst: <strong class="highlight-text"><span id="w-total-pct">0.0</span>%</strong></div>
-
-                        <div class="unified-table-container">
-                            <table class="projection-table">
-                                <thead>
-                                    <tr><th>Any</th><th>Reducció</th><th>Cost Final</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="row-data"><td>2025</td><td>-</td><td id="water-y0-cost">0</td></tr>
-                                    <tr class="row-data"><td>2026</td><td id="water-y1-red">0</td><td id="water-y1-cost">0</td></tr>
-                                    <tr class="row-data"><td>2027</td><td id="water-y2-red">0</td><td id="water-y2-cost">0</td></tr>
-                                    <tr class="row-data"><td>2028</td><td id="water-y3-red">0</td><td id="water-y3-cost">0</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <details class="proposal-detail">
-                            <summary>📖 Detall de les mesures</summary>
-                            <ul>
-                                <li><strong>1. Reparació de fuites:</strong> Revisió trimestral i manteniment preventiu de cisternes i aixetes.</li>
-                                <li><strong>2. Aixetes temporitzades:</strong> Substitució de les aixetes manuals per polsadors amb tancament automàtic (10-15 segons).</li>
-                                <li><strong>3. Doble descàrrega:</strong> Instal·lació de mecanismes de doble polsador (3L/6L) als vàters.</li>
-                                <li><strong>4. Ús pluvials:</strong> Recollida d'aigua de pluja de la coberta del gimnàs per a l'ús de reg de l'hort escolar i la neteja de patis.</li>
-                                <li><strong>5. Conscienciació:</strong> Campanyes visuals i xerrades des de la comissió de sostenibilitat de l'institut.</li>
-                            </ul>
-                        </details>
-                    </div>
-
-                    <div class="measure-card">
-                        <h3 class="card-header">⚡ Sector Electricitat</h3>
-                        <div class="action-list">
-                            <div class="action-item"><div class="action-title"><span>Apagat profund <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 10%)</small></span> <span id="val-e-act1">0%</span></div><input type="range" class="styled-slider" id="e-act1" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Canvi a LED <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 7%)</small></span> <span id="val-e-act2">0%</span></div><input type="range" class="styled-slider" id="e-act2" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Plaques Solars <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 5%)</small></span> <span id="val-e-act3">0%</span></div><input type="range" class="styled-slider" id="e-act3" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Sensors presència <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 5%)</small></span> <span id="val-e-act4">0%</span></div><input type="range" class="styled-slider" id="e-act4" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Ajust Clima <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 3%)</small></span> <span id="val-e-act5">0%</span></div><input type="range" class="styled-slider" id="e-act5" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                        </div>
-                        <div class="summary-box">Estalvi previst: <strong class="highlight-text"><span id="e-total-pct">0.0</span>%</strong></div>
-
-                        <div class="unified-table-container">
-                            <table class="projection-table">
-                                <thead>
-                                    <tr><th>Any</th><th>Reducció</th><th>Cost Final</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="row-data"><td>2025</td><td>-</td><td id="elec-y0-cost">0</td></tr>
-                                    <tr class="row-data"><td>2026</td><td id="elec-y1-red">0</td><td id="elec-y1-cost">0</td></tr>
-                                    <tr class="row-data"><td>2027</td><td id="elec-y2-red">0</td><td id="elec-y2-cost">0</td></tr>
-                                    <tr class="row-data"><td>2028</td><td id="elec-y3-red">0</td><td id="elec-y3-cost">0</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <details class="proposal-detail">
-                            <summary>📖 Detall de les mesures</summary>
-                            <ul>
-                                <li><strong>1. Apagat profund (Deep Sleep):</strong> Protocol perquè tots els ordinadors i pissarres quedin desconnectats fora de l'horari per eliminar el consum fantasma.</li>
-                                <li><strong>2. Canvi a LED:</strong> Substitució progressiva dels tubs fluorescents clàssics de les aules per panells LED.</li>
-                                <li><strong>3. Plaques Solars:</strong> Aprofitament de plaques d'autoconsum per cobrir la demanda base de servidors i neveres.</li>
-                                <li><strong>4. Sensors de presència:</strong> Instal·lació de detectors als passadissos i lavabos perquè el llum s'apagui sol.</li>
-                                <li><strong>5. Ajust de Climatització:</strong> Fixar termòstats a 20°C a l'hivern i 26°C a l'estiu (si n'hi ha).</li>
-                            </ul>
-                        </details>
-                    </div>
-
-                    <div class="measure-card">
-                        <h3 class="card-header">📎 Material Oficina</h3>
-                        <div class="action-list">
-                            <div class="action-item"><div class="action-title"><span>Digitalització <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 10%)</small></span> <span id="val-m-act1">0%</span></div><input type="range" class="styled-slider" id="m-act1" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Restricció còpies <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 8%)</small></span> <span id="val-m-act2">0%</span></div><input type="range" class="styled-slider" id="m-act2" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Retoladors rec. <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 5%)</small></span> <span id="val-m-act3">0%</span></div><input type="range" class="styled-slider" id="m-act3" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Reutilització <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 4%)</small></span> <span id="val-m-act4">0%</span></div><input type="range" class="styled-slider" id="m-act4" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Compres conj. <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 3%)</small></span> <span id="val-m-act5">0%</span></div><input type="range" class="styled-slider" id="m-act5" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                        </div>
-                        <div class="summary-box">Estalvi previst: <strong class="highlight-text"><span id="m-total-pct">0.0</span>%</strong></div>
-
-                        <div class="unified-table-container">
-                            <table class="projection-table">
-                                <thead>
-                                    <tr><th>Any</th><th>Estalviat</th><th>Cost Final</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="row-data"><td>2025</td><td>-</td><td id="sup-y0-cost">0</td></tr>
-                                    <tr class="row-data"><td>2026</td><td id="sup-y1-red">0</td><td id="sup-y1-cost">0</td></tr>
-                                    <tr class="row-data"><td>2027</td><td id="sup-y2-red">0</td><td id="sup-y2-cost">0</td></tr>
-                                    <tr class="row-data"><td>2028</td><td id="sup-y3-red">0</td><td id="sup-y3-cost">0</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <details class="proposal-detail">
-                            <summary>📖 Detall de les mesures</summary>
-                            <ul>
-                                <li><strong>1. Digitalització:</strong> Eliminació del paper per a circulars, utilitzant plataformes digitals (iEduca, Classroom).</li>
-                                <li><strong>2. Restricció de còpies:</strong> Assignació de quotes de fotocòpies per departament i professorat mitjançant codi PIN.</li>
-                                <li><strong>3. Retoladors recarregables:</strong> Substitució dels retoladors d'un sol ús per sistemes de recàrrega de tinta.</li>
-                                <li><strong>4. Reutilització de paper:</strong> Creació de safates de "paper brut" a totes les aules per a esborranys.</li>
-                                <li><strong>5. Compres conjuntes:</strong> Centralitzar les compres per demanar formats grans i reduir embalatges innecessaris.</li>
-                            </ul>
-                        </details>
-                    </div>
-
-                    <div class="measure-card">
-                        <h3 class="card-header">🧹 Neteja i Higiene</h3>
-                        <div class="action-list">
-                            <div class="action-item"><div class="action-title"><span>Assecadors elèctr. <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 10%)</small></span> <span id="val-c-act1">0%</span></div><input type="range" class="styled-slider" id="c-act1" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Dosificadors <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 8%)</small></span> <span id="val-c-act2">0%</span></div><input type="range" class="styled-slider" id="c-act2" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Compra a granel <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 5%)</small></span> <span id="val-c-act3">0%</span></div><input type="range" class="styled-slider" id="c-act3" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Eines reutilitz. <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 4%)</small></span> <span id="val-c-act4">0%</span></div><input type="range" class="styled-slider" id="c-act4" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                            <div class="action-item"><div class="action-title"><span>Control d'estoc <br><small class="reduction-info">(Si apliques el 100%, reduiràs un 3%)</small></span> <span id="val-c-act5">0%</span></div><input type="range" class="styled-slider" id="c-act5" min="0" max="100" value="0" oninput="calcularConsums()"></div>
-                        </div>
-                        <div class="summary-box">Estalvi previst: <strong class="highlight-text"><span id="c-total-pct">0.0</span>%</strong></div>
-
-                        <div class="unified-table-container">
-                            <table class="projection-table">
-                                <thead>
-                                    <tr><th>Any</th><th>Estalviat</th><th>Cost Final</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="row-data"><td>2025</td><td>-</td><td id="clean-y0-cost">0</td></tr>
-                                    <tr class="row-data"><td>2026</td><td id="clean-y1-red">0</td><td id="clean-y1-cost">0</td></tr>
-                                    <tr class="row-data"><td>2027</td><td id="clean-y2-red">0</td><td id="clean-y2-cost">0</td></tr>
-                                    <tr class="row-data"><td>2028</td><td id="clean-y3-red">0</td><td id="clean-y3-cost">0</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <details class="proposal-detail">
-                            <summary>📖 Detall de les mesures</summary>
-                            <ul>
-                                <li><strong>1. Eixugamans elèctrics:</strong> Substitució de tovalloles de paper per eixugamans elèctrics d'alta eficiència.</li>
-                                <li><strong>2. Dosificadors automàtics:</strong> Ús de dispensadors automàtics de sabó d'escuma per evitar malbaratament.</li>
-                                <li><strong>3. Compra a granel:</strong> Productes de neteja en garrafes de 20 litres concentrades, reduint plàstic.</li>
-                                <li><strong>4. Eines reutilitzables:</strong> Transició cap a baietes de microfibra rentables en comptes de paper d'un sol ús.</li>
-                                <li><strong>5. Control d'estoc centralitzat:</strong> Gestió del magatzem per evitar que els productes de neteja caduquin.</li>
-                            </ul>
-                        </details>
-                    </div>
-                </div>
-            </section>
         </div>
+
     </main>
 
     <script src="script.js"></script>

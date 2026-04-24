@@ -1,12 +1,9 @@
-// Variable global per emmagatzemar el gràfic i el filtre actual
 let graficConsum = null;
-let filtreActual = 'tots'; // Per defecte es mostren totes les línies
+let filtreActual = 'tots';
 
-// Funció per filtrar la gràfica des dels botons
 function filtrarGrafic(tipus, boto) {
     filtreActual = tipus;
 
-    // Canviem el color dels botons per veure quin està seleccionat
     document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
     boto.classList.add('active');
 
@@ -14,19 +11,15 @@ function filtrarGrafic(tipus, boto) {
 
     let mostrarTots = (tipus === 'tots');
 
-    // 0 i 1 són Llum (kWh)
     graficConsum.setDatasetVisibility(0, mostrarTots || tipus === 'llum');
     graficConsum.setDatasetVisibility(1, mostrarTots || tipus === 'llum');
 
-    // 2 i 3 són Aigua (Litres)
     graficConsum.setDatasetVisibility(2, mostrarTots || tipus === 'aigua');
     graficConsum.setDatasetVisibility(3, mostrarTots || tipus === 'aigua');
 
-    // 4 i 5 són Material (€)
     graficConsum.setDatasetVisibility(4, mostrarTots || tipus === 'mat');
     graficConsum.setDatasetVisibility(5, mostrarTots || tipus === 'mat');
 
-    // 6 i 7 són Neteja (€)
     graficConsum.setDatasetVisibility(6, mostrarTots || tipus === 'net');
     graficConsum.setDatasetVisibility(7, mostrarTots || tipus === 'net');
 
@@ -47,7 +40,7 @@ function restaurarDadesBase() {
 
     let btnBase = document.getElementById('btn-calc-base');
     if (btnBase) {
-        btnBase.innerHTML = '🪄 DADES BASE CARREGADES';
+        btnBase.innerHTML = '🪄 CALCULATE NEW IMPACT';
         btnBase.style.backgroundColor = 'var(--eco-primary)';
     }
 }
@@ -55,7 +48,7 @@ function restaurarDadesBase() {
 function validarInput(element) {
     let valor = parseFloat(element.value);
     if (element.value === "" || isNaN(valor) || valor < 0) {
-        element.setCustomValidity("Siusplau, introdueix un número real i positiu.");
+        element.setCustomValidity("Please enter a real and positive number.");
     } else {
         element.setCustomValidity("");
     }
@@ -65,7 +58,7 @@ function validarInput(element) {
 function marcarCanvis() {
     let btnBase = document.getElementById('btn-calc-base');
     if (btnBase) {
-        btnBase.innerHTML = '⚠️ CALCULAR NOU IMPACTE';
+        btnBase.innerHTML = '⚠️ CALCULATE NEW IMPACT';
         btnBase.style.backgroundColor = '#d97706';
         btnBase.style.color = 'white';
     }
@@ -73,9 +66,8 @@ function marcarCanvis() {
 
 function actualitzarGrafic(valLlumBase, pctLlum, valAigBase, pctAig, valMatBase, pctMat, valNetBase, pctNet) {
     const ctx = document.getElementById('graficConsum').getContext('2d');
-    const mesosBase = ['Gen', 'Feb', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Oct', 'Nov', 'Des'];
+    const mesosBase = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-    // Variacions mensuals realistes per un institut
     const varLlum = [1.2, 1.2, 1.1, 1.0, 1.0, 0.9, 0.2, 0.1, 0.9, 1.0, 1.1, 1.2];
     const varAigua = [1.0, 1.0, 1.0, 1.1, 1.2, 1.2, 0.3, 0.1, 1.0, 1.0, 1.0, 1.0];
     const varMat = [1.5, 1.0, 1.0, 1.0, 1.0, 0.8, 0.1, 0.1, 1.5, 1.0, 1.0, 1.0];
@@ -87,7 +79,6 @@ function actualitzarGrafic(valLlumBase, pctLlum, valAigBase, pctAig, valMatBase,
     let dMatBase = [], dMatProj = [];
     let dNetBase = [], dNetProj = [];
 
-    // Generem els 36 mesos (3 anys) amb estalvi progressiu
     for (let any = 0; any < 3; any++) {
         let anyText = 2026 + any;
         let fraccioEstalvi = (any + 1) / 3;
@@ -129,17 +120,17 @@ function actualitzarGrafic(valLlumBase, pctLlum, valAigBase, pctAig, valMatBase,
             data: {
                 labels: mesos,
                 datasets: [
-                    { label: '⚡ Llum (Base)', data: dLlumBase, borderColor: 'rgba(234, 179, 8, 0.3)', borderDash: [5, 5], tension: 0.4, yAxisID: 'yLlum' },
-                    { label: '⚡ Llum (Mesures)', data: dLlumProj, borderColor: '#eab308', backgroundColor: 'rgba(234, 179, 8, 0.1)', fill: true, tension: 0.4, yAxisID: 'yLlum' },
+                    { label: '⚡ Electricity (Base)', data: dLlumBase, borderColor: 'rgba(234, 179, 8, 0.3)', borderDash: [5, 5], tension: 0.4, yAxisID: 'yLlum' },
+                    { label: '⚡ Electricity (Measures)', data: dLlumProj, borderColor: '#eab308', backgroundColor: 'rgba(234, 179, 8, 0.1)', fill: true, tension: 0.4, yAxisID: 'yLlum' },
 
-                    { label: '💧 Aigua (Base)', data: dAiguaBase, borderColor: 'rgba(59, 130, 246, 0.3)', borderDash: [5, 5], tension: 0.4, yAxisID: 'yAigua' },
-                    { label: '💧 Aigua (Mesures)', data: dAiguaProj, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4, yAxisID: 'yAigua' },
+                    { label: '💧 Water (Base)', data: dAiguaBase, borderColor: 'rgba(59, 130, 246, 0.3)', borderDash: [5, 5], tension: 0.4, yAxisID: 'yAigua' },
+                    { label: '💧 Water (Measures)', data: dAiguaProj, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4, yAxisID: 'yAigua' },
 
-                    { label: '📦 Material (Base)', data: dMatBase, borderColor: 'rgba(168, 85, 247, 0.3)', borderDash: [5, 5], tension: 0.4, yAxisID: 'yEuros' },
-                    { label: '📦 Material (Mesures)', data: dMatProj, borderColor: '#a855f7', backgroundColor: 'rgba(168, 85, 247, 0.1)', fill: true, tension: 0.4, yAxisID: 'yEuros' },
+                    { label: '📦 Supplies (Base)', data: dMatBase, borderColor: 'rgba(168, 85, 247, 0.3)', borderDash: [5, 5], tension: 0.4, yAxisID: 'yEuros' },
+                    { label: '📦 Supplies (Measures)', data: dMatProj, borderColor: '#a855f7', backgroundColor: 'rgba(168, 85, 247, 0.1)', fill: true, tension: 0.4, yAxisID: 'yEuros' },
 
-                    { label: '🧹 Higiene (Base)', data: dNetBase, borderColor: 'rgba(20, 184, 166, 0.3)', borderDash: [5, 5], tension: 0.4, yAxisID: 'yEuros' },
-                    { label: '🧹 Higiene (Mesures)', data: dNetProj, borderColor: '#14b8a6', backgroundColor: 'rgba(20, 184, 166, 0.1)', fill: true, tension: 0.4, yAxisID: 'yEuros' }
+                    { label: '🧹 Hygiene (Base)', data: dNetBase, borderColor: 'rgba(20, 184, 166, 0.3)', borderDash: [5, 5], tension: 0.4, yAxisID: 'yEuros' },
+                    { label: '🧹 Hygiene (Measures)', data: dNetProj, borderColor: '#14b8a6', backgroundColor: 'rgba(20, 184, 166, 0.1)', fill: true, tension: 0.4, yAxisID: 'yEuros' }
                 ]
             },
             options: {
@@ -148,18 +139,15 @@ function actualitzarGrafic(valLlumBase, pctLlum, valAigBase, pctAig, valMatBase,
                 interaction: { mode: 'index', intersect: false },
                 plugins: {
                     legend: {
-                        position: 'top',
-                        labels: { padding: 15, usePointStyle: true },
-                        onClick: null // Desactivem l'efecte de clicar llegenda perquè manin els botons
+                        display: false // Hides the legend above the chart
                     },
                     tooltip: {
                         callbacks: {
                             label: function(context) {
                                 let label = context.dataset.label || '';
                                 let value = Math.round(context.parsed.y).toLocaleString();
-                                // Afegim la unitat de mesura correcta segons l'àmbit
-                                if (label.includes('Llum')) return label + ': ' + value + ' kWh';
-                                if (label.includes('Aigua')) return label + ': ' + value + ' L';
+                                if (label.includes('Electricity')) return label + ': ' + value + ' kWh';
+                                if (label.includes('Water')) return label + ': ' + value + ' L';
                                 return label + ': ' + value + ' €';
                             }
                         }
@@ -167,26 +155,24 @@ function actualitzarGrafic(valLlumBase, pctLlum, valAigBase, pctAig, valMatBase,
                 },
                 scales: {
                     x: { ticks: { maxTicksLimit: 12 } },
-                    // Eixos dinàmics que apareixen o desapareixen sols
                     yLlum: {
                         type: 'linear', display: 'auto', position: 'left',
-                        title: { display: true, text: 'Electricitat (kWh)' }, beginAtZero: false
+                        title: { display: true, text: 'Electricity (kWh)' }, beginAtZero: false
                     },
                     yAigua: {
                         type: 'linear', display: 'auto', position: 'right',
-                        title: { display: true, text: 'Aigua (Litres)' },
+                        title: { display: true, text: 'Water (Liters)' },
                         beginAtZero: false, grid: { drawOnChartArea: false }
                     },
                     yEuros: {
                         type: 'linear', display: 'auto', position: 'right',
-                        title: { display: true, text: 'Material i Higiene (€)' },
+                        title: { display: true, text: 'Supplies & Hygiene (€)' },
                         beginAtZero: false, grid: { drawOnChartArea: false }
                     }
                 }
             }
         });
 
-        // Apliquem el filtre que toqui just en crear la gràfica
         let btnInicial = document.querySelector('.filter-btn.active');
         if(btnInicial) filtrarGrafic(filtreActual, btnInicial);
     }
@@ -194,21 +180,18 @@ function actualitzarGrafic(valLlumBase, pctLlum, valAigBase, pctAig, valMatBase,
 
 function calcularConsums() {
     let btnBase = document.getElementById('btn-calc-base');
-    if (btnBase && btnBase.innerHTML === '⚠️ CALCULAR NOU IMPACTE') {
-        btnBase.innerHTML = '✅ DADES ACTUALITZADES';
+    if (btnBase && btnBase.innerHTML === '⚠️ CALCULATE NEW IMPACT') {
+        btnBase.innerHTML = '✅ DATA UPDATED';
         btnBase.style.backgroundColor = 'var(--eco-primary)';
-        setTimeout(() => { if (btnBase.innerHTML === '✅ DADES ACTUALITZADES') btnBase.innerHTML = '🪄 MODIFICAR DADES BASE'; }, 3000);
+        setTimeout(() => { if (btnBase.innerHTML === '✅ DATA UPDATED') btnBase.innerHTML = '🪄 CALCULATE NEW IMPACT'; }, 3000);
     }
-
-    document.getElementById('results').style.display = 'block';
-    let btnPdf = document.getElementById('btn-pdf');
-    if(btnPdf) btnPdf.style.display = 'flex';
 
     let elecBase = Math.abs(parseFloat(document.getElementById('elec-base').value) || 0);
     let waterBase = Math.abs(parseFloat(document.getElementById('water-base').value) || 0);
     let supBase = Math.abs(parseFloat(document.getElementById('supplies-base').value) || 0);
     let cleanBase = Math.abs(parseFloat(document.getElementById('cleaning-base').value) || 0);
 
+    // Update the figures in the results box below
     document.getElementById('base-e-esc').innerText = Math.round(elecBase * 10).toLocaleString();
     document.getElementById('base-e-nat').innerText = Math.round(elecBase * 12).toLocaleString();
     document.getElementById('base-w-esc').innerText = Math.round(waterBase * 10).toLocaleString();
@@ -263,7 +246,6 @@ function calcularConsums() {
     document.getElementById('estalvi-euros').innerText = Math.round(inercia - totalProjecte).toLocaleString() + ' €';
     document.getElementById('estalvi-co2').innerText = Math.round((elecBase*12 * (ePct/100)) * 0.25).toLocaleString() + ' Kg';
 
-    // ATENCIÓ: Ara passem les dades naturals (kWh, Litres, etc) sense multiplicar-les pel preu!
     actualitzarGrafic(
         elecBase, ePct,
         waterBase, wPct,
@@ -272,7 +254,7 @@ function calcularConsums() {
     );
 }
 
-function generarPDF() {
-    document.querySelectorAll('details').forEach(d => d.open = true);
-    setTimeout(() => { window.print(); }, 300);
-}
+// Automatic initialization when the web opens
+window.onload = () => {
+    restaurarDadesBase();
+};
